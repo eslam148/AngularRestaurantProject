@@ -1,0 +1,135 @@
+<div class="address-list-container">
+  <h2>My Addresses</h2>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading-spinner">
+    <div class="spinner"></div>
+    <p>Loading addresses...</p>
+  </div>
+
+  <!-- Error Message -->
+  <div *ngIf="error" class="error-message">
+    {{ error }}
+  </div>
+
+  <!-- Success Message -->
+  <div *ngIf="successMessage" class="success-message">
+    {{ successMessage }}
+  </div>
+
+  <!-- Address List -->
+  <div class="address-content" *ngIf="!loading">
+    <!-- Add New Address Button -->
+    <button class="add-address-btn" (click)="startAddNew()" *ngIf="!isAddingNew">
+      <i class="fas fa-plus"></i> Add New Address
+    </button>
+
+    <!-- New Address Form -->
+    <form *ngIf="isAddingNew" (ngSubmit)="onSubmit()" #addressForm="ngForm" class="address-form">
+      <h3>Add New Address</h3>
+
+      <div class="form-group">
+        <label for="street">Street Address*</label>
+        <input
+          type="text"
+          id="street"
+          name="street"
+          [(ngModel)]="newAddress.street"
+          required
+          placeholder="Enter street address">
+      </div>
+
+      <div class="form-group">
+        <label for="city">City*</label>
+        <input
+          type="text"
+          id="city"
+          name="city"
+          [(ngModel)]="newAddress.city"
+          required
+          placeholder="Enter city">
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="state">State*</label>
+          <input
+            type="text"
+            id="state"
+            name="state"
+            [(ngModel)]="newAddress.state"
+            required
+            placeholder="Enter state">
+        </div>
+
+        <div class="form-group">
+          <label for="postalCode">Postal Code*</label>
+          <input
+            type="text"
+            id="postalCode"
+            name="postalCode"
+            [(ngModel)]="newAddress.postalCode"
+            required
+            pattern="[0-9]{5}"
+            placeholder="Enter postal code">
+        </div>
+      </div>
+
+      <div class="form-group checkbox-group">
+        <label>
+          <input
+            type="checkbox"
+            name="isDefault"
+            [(ngModel)]="newAddress.isDefault">
+          Set as default address
+        </label>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="save-btn" [disabled]="!addressForm.valid || loading">
+          Save Address
+        </button>
+        <button type="button" class="cancel-btn" (click)="cancelAdd()" [disabled]="loading">
+          Cancel
+        </button>
+      </div>
+    </form>
+
+    <!-- Addresses Grid -->
+    <div class="addresses-grid">
+      <div class="address-card" *ngFor="let address of addresses">
+        <div class="address-content">
+          <div class="address-header">
+            <h4>{{ address.street }}</h4>
+            <span class="default-badge" *ngIf="address.isDefault">Default</span>
+          </div>
+          <div class="address-details">
+            <p>{{ address.city }}, {{ address.state }} {{ address.postalCode }}</p>
+          </div>
+        </div>
+        <div class="address-actions">
+          <button class="edit-btn" (click)="onEdit(address)">
+            <i class="fas fa-edit"></i>
+          </button>
+          <button class="delete-btn" (click)="onDelete(address.id)" [disabled]="address.isDefault">
+            <i class="fas fa-trash"></i>
+          </button>
+          <button
+            class="default-btn"
+            (click)="setAsDefault(address.id)"
+            *ngIf="!address.isDefault">
+            Set as Default
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="!isAddingNew && addresses.length === 0" class="empty-state">
+      <p>You haven't added any addresses yet.</p>
+      <button (click)="startAddNew()" class="add-address-btn">
+        Add Your First Address
+      </button>
+    </div>
+  </div>
+</div>

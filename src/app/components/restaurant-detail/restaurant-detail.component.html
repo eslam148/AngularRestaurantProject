@@ -1,0 +1,96 @@
+<div class="restaurant-detail-container">
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading-spinner">
+    <div class="spinner"></div>
+    <p>Loading restaurant details...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error" class="error-message">
+    {{ error }}
+  </div>
+
+  <!-- Restaurant Details -->
+  <div class="restaurant-content" *ngIf="restaurant && !loading && !error">
+    <div class="restaurant-header">
+      <div class="header-image">
+        <img [src]="restaurant.imageUrl || 'assets/images/default-restaurant.jpg'" [alt]="restaurant.name">
+      </div>
+
+      <div class="header-info">
+        <h1>{{ restaurant.name }}</h1>
+        <div class="rating">
+          <span class="stars" [style.--rating]="restaurant.rating">★★★★★</span>
+          <span class="rating-value">{{ restaurant.rating }}/5</span>
+        </div>
+        <p class="description">{{ restaurant.description }}</p>
+        <div class="details">
+          <p><i class="fas fa-clock"></i> {{ restaurant.openingHours }} - {{ restaurant.closingHours }}</p>
+          <p><i class="fas fa-phone"></i> {{ restaurant.phone }}</p>
+          <p><i class="fas fa-map-marker-alt"></i> {{ restaurant.address }}</p>
+        </div>
+        <div class="status" [class.open]="restaurant.isOpen">
+          {{ restaurant.isOpen ? 'Open' : 'Closed' }}
+        </div>
+      </div>
+    </div>
+
+    <!-- Menu Section -->
+    <div class="menu-section">
+      <h2>Menu</h2>
+
+      <div class="menu-grid">
+        <div class="menu-item" *ngFor="let item of restaurant.menuItems">
+          <div class="item-image">
+            <img [src]="item.imageUrl || 'assets/images/default-menu-item.jpg'" [alt]="item.name">
+          </div>
+
+          <div class="item-info">
+            <h3>{{ item.name }}</h3>
+            <p class="item-description">{{ item.description }}</p>
+            <p class="item-price">{{ item.price | currency }}</p>
+
+            <div class="item-actions">
+              <div class="quantity-controls" *ngIf="item.isAvailable">
+                <button
+                  (click)="updateQuantity(item, -1)"
+                  [disabled]="!getQuantity(item.id)">
+                  -
+                </button>
+                <span>{{ getQuantity(item.id) }}</span>
+                <button
+                  (click)="updateQuantity(item, 1)"
+                  [disabled]="!item.isAvailable">
+                  +
+                </button>
+              </div>
+              <div class="unavailable" *ngIf="!item.isAvailable">
+                Currently Unavailable
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Order Summary -->
+    <div class="order-summary" *ngIf="getTotalPrice() > 0">
+      <h3>Order Summary</h3>
+      <div class="summary-items">
+        <div class="summary-item" *ngFor="let item of restaurant.menuItems">
+          <ng-container *ngIf="selectedItems[item.id]">
+            <span>{{ item.name }} × {{ selectedItems[item.id] }}</span>
+            <span>{{ item.price * selectedItems[item.id] | currency }}</span>
+          </ng-container>
+        </div>
+      </div>
+      <div class="total">
+        <span>Total:</span>
+        <span>{{ getTotalPrice() | currency }}</span>
+      </div>
+      <button class="place-order-btn" (click)="placeOrder()">
+        Place Order
+      </button>
+    </div>
+  </div>
+</div>

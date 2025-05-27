@@ -1,0 +1,66 @@
+<div class="payment-list-container">
+  <h2>Payment History</h2>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading-spinner">
+    <div class="spinner"></div>
+    <p>Loading payments...</p>
+  </div>
+
+  <!-- Error Message -->
+  <div *ngIf="error" class="error-message">
+    {{ error }}
+  </div>
+
+  <!-- Success Message -->
+  <div *ngIf="successMessage" class="success-message">
+    {{ successMessage }}
+  </div>
+
+  <!-- Payments List -->
+  <div class="payments-grid" *ngIf="!loading && !error">
+    <div class="payment-card" *ngFor="let payment of payments">
+      <div class="payment-header">
+        <span class="payment-id">Payment #{{ payment.id }}</span>
+        <span class="payment-date">{{ formatDate(payment.createdAt) }}</span>
+      </div>
+
+      <div class="payment-content">
+        <div class="payment-details">
+          <div class="detail-row">
+            <span class="label">Order ID:</span>
+            <a [routerLink]="['/orders', payment.orderId]" class="order-link">
+              #{{ payment.orderId }}
+            </a>
+          </div>
+          <div class="detail-row">
+            <span class="label">Amount:</span>
+            <span class="amount">{{ formatAmount(payment.amount) }}</span>
+          </div>
+          <div class="detail-row">
+            <span class="label">Method:</span>
+            <span class="method">{{ payment.paymentMethod }}</span>
+          </div>
+          <div class="detail-row">
+            <span class="label">Transaction ID:</span>
+            <span class="transaction-id">{{ payment.transactionId || 'N/A' }}</span>
+          </div>
+        </div>
+
+        <div class="payment-status">
+          <span class="status-badge" [ngClass]="getStatusClass(payment.status)">
+            {{ payment.status }}
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!loading && !error && payments.length === 0" class="empty-state">
+    <p>No payment history available.</p>
+    <button routerLink="/restaurants" class="browse-btn">
+      Browse Restaurants
+    </button>
+  </div>
+</div>
