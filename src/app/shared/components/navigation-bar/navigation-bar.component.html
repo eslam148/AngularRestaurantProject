@@ -1,0 +1,81 @@
+<!-- Simplified Navigation Bar -->
+<header class="navigation-bar">
+  <div class="nav-container">
+    <!-- Logo Section -->
+    <div class="logo-section">
+      <a routerLink="/" class="logo-link">
+        <span class="logo-icon">🍽️</span>
+        <span class="logo-text">FoodieApp</span>
+      </a>
+    </div>
+
+    <!-- Desktop Navigation -->
+    <nav class="desktop-nav desktop-only">
+      <ul class="nav-list">
+        <li *ngFor="let item of navigationItems" class="nav-item">
+          <a
+            *ngIf="shouldShowNavItem(item)"
+            [routerLink]="item.route"
+            routerLinkActive="active"
+            class="nav-link">
+            <span class="nav-icon">{{ item.icon }}</span>
+            <span class="nav-label">{{ item.label }}</span>
+            <span class="nav-badge" *ngIf="item.badge">{{ item.badge }}</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <!-- Layout Switcher (Desktop) -->
+    <div class="layout-switcher desktop-only" *ngIf="showLayoutSwitcher">
+      <div class="switcher-label">Layout:</div>
+      <div class="switcher-buttons">
+        <button
+          (click)="switchToCustomerLayout()"
+          [class.active]="currentLayout === LayoutType.CUSTOMER"
+          class="layout-btn customer">
+          <span class="btn-icon">🍽️</span>
+          <span class="btn-text">Customer</span>
+        </button>
+        <button
+          (click)="switchToAdminLayout()"
+          [class.active]="currentLayout === LayoutType.ADMIN"
+          class="layout-btn admin">
+          <span class="btn-icon">⚙️</span>
+          <span class="btn-text">Admin</span>
+        </button>
+        <button
+          (click)="switchToDeliveryLayout()"
+          [class.active]="currentLayout === LayoutType.DELIVERY"
+          class="layout-btn delivery">
+          <span class="btn-icon">🚚</span>
+          <span class="btn-text">Delivery</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- User Actions -->
+    <div class="user-actions">
+      <!-- Authentication Buttons (Not Authenticated) -->
+      <div class="auth-buttons desktop-only" *ngIf="!isAuthenticated">
+        <button (click)="login()" class="btn btn-outline">
+          Login
+        </button>
+        <button (click)="register()" class="btn btn-primary">
+          Sign Up
+        </button>
+      </div>
+
+      <!-- User Menu (Authenticated) -->
+      <div class="user-menu desktop-only" *ngIf="isAuthenticated">
+        <button class="user-btn"
+                (click)="goToProfile()"
+                [attr.aria-label]="'User menu for ' + (currentUser?.name || 'User')">
+          <span class="user-avatar" aria-hidden="true">👤</span>
+          <span class="user-name">{{ currentUser?.name || 'User' }}</span>
+          <span class="dropdown-arrow" aria-hidden="true">▼</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</header>

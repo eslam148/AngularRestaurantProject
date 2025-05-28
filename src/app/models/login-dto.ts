@@ -6,5 +6,10 @@ export interface LoginDTO {
 export interface LoginResponseDTO {
     token: string;
     refreshToken: string;
-    // Additional user information can be added here as per API documentation
+    userId?: string;
+    email?: string;
+    firstName?: string;
+    lastName?: string;
+    role?: string;
+    isEmailConfirmed?: boolean;
 }

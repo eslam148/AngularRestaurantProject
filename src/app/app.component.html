@@ -1,2 +1,14 @@
- 
-<router-outlet />
+<!-- Main App Component with Dynamic Layout Selection -->
+<div class="app-container">
+  <!-- Customer Layout -->
+  <app-customer-layout *ngIf="currentLayout === LayoutType.CUSTOMER"></app-customer-layout>
+
+  <!-- Admin Layout -->
+  <app-admin-layout *ngIf="currentLayout === LayoutType.ADMIN"></app-admin-layout>
+
+  <!-- Delivery Layout -->
+  <app-delivery-layout *ngIf="currentLayout === LayoutType.DELIVERY"></app-delivery-layout>
+
+  <!-- Standalone Routes (no layout) -->
+  <router-outlet *ngIf="currentLayout === null"></router-outlet>
+</div>

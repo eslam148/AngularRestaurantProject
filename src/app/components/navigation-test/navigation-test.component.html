@@ -1,0 +1,159 @@
+<!-- Navigation Test Component -->
+<div class="navigation-test">
+  <div class="test-container">
+    <h1>🧪 Navigation System Test</h1>
+    <p class="test-description">
+      Test the unified navigation system across all three layouts: Customer, Admin, and Delivery.
+    </p>
+
+    <!-- Current Layout Display -->
+    <div class="current-layout-display">
+      <h2>Current Layout</h2>
+      <div class="layout-indicator" [ngSwitch]="(currentLayout$ | async)">
+        <div *ngSwitchCase="LayoutType.CUSTOMER" class="layout-badge customer">
+          <span class="layout-icon">👤</span>
+          <span class="layout-name">Customer Layout</span>
+        </div>
+        <div *ngSwitchCase="LayoutType.ADMIN" class="layout-badge admin">
+          <span class="layout-icon">⚙️</span>
+          <span class="layout-name">Admin Layout</span>
+        </div>
+        <div *ngSwitchCase="LayoutType.DELIVERY" class="layout-badge delivery">
+          <span class="layout-icon">🚚</span>
+          <span class="layout-name">Delivery Layout</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Layout Switching Controls -->
+    <div class="layout-controls">
+      <h2>Switch Layouts</h2>
+      <div class="control-buttons">
+        <button 
+          class="control-btn customer" 
+          (click)="switchToCustomer()"
+          [class.active]="(currentLayout$ | async) === LayoutType.CUSTOMER">
+          <span class="btn-icon">👤</span>
+          <span class="btn-text">Customer</span>
+        </button>
+        
+        <button 
+          class="control-btn admin" 
+          (click)="switchToAdmin()"
+          [class.active]="(currentLayout$ | async) === LayoutType.ADMIN">
+          <span class="btn-icon">⚙️</span>
+          <span class="btn-text">Admin</span>
+        </button>
+        
+        <button 
+          class="control-btn delivery" 
+          (click)="switchToDelivery()"
+          [class.active]="(currentLayout$ | async) === LayoutType.DELIVERY">
+          <span class="btn-icon">🚚</span>
+          <span class="btn-text">Delivery</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Navigation Test Routes -->
+    <div class="navigation-routes">
+      <h2>Test Navigation Routes</h2>
+      
+      <!-- Customer Routes -->
+      <div class="route-section">
+        <h3>Customer Routes</h3>
+        <div class="route-buttons">
+          <button class="route-btn" (click)="navigateToRoute('/customer/menu')">
+            🍽️ Menu
+          </button>
+          <button class="route-btn" (click)="navigateToRoute('/customer/cart')">
+            🛒 Cart
+          </button>
+          <button class="route-btn" (click)="navigateToRoute('/customer/orders')">
+            📦 Orders
+          </button>
+          <button class="route-btn" (click)="navigateToRoute('/customer/profile')">
+            👤 Profile
+          </button>
+        </div>
+      </div>
+
+      <!-- Admin Routes -->
+      <div class="route-section">
+        <h3>Admin Routes</h3>
+        <div class="route-buttons">
+          <button class="route-btn" (click)="navigateToRoute('/admin/dashboard')">
+            📊 Dashboard
+          </button>
+          <button class="route-btn" (click)="navigateToRoute('/admin/restaurants')">
+            🏪 Restaurants
+          </button>
+          <button class="route-btn" (click)="navigateToRoute('/admin/orders')">
+            📦 Orders
+          </button>
+          <button class="route-btn" (click)="navigateToRoute('/admin/analytics')">
+            📈 Analytics
+          </button>
+        </div>
+      </div>
+
+      <!-- Delivery Routes -->
+      <div class="route-section">
+        <h3>Delivery Routes</h3>
+        <div class="route-buttons">
+          <button class="route-btn" (click)="navigateToRoute('/delivery/dashboard')">
+            📊 Dashboard
+          </button>
+          <button class="route-btn" (click)="navigateToRoute('/delivery/orders')">
+            📦 Active Orders
+          </button>
+          <button class="route-btn" (click)="navigateToRoute('/delivery/map')">
+            🗺️ Map
+          </button>
+          <button class="route-btn" (click)="navigateToRoute('/delivery/profile')">
+            👤 Profile
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Features Test -->
+    <div class="features-test">
+      <h2>Navigation Features</h2>
+      <div class="feature-list">
+        <div class="feature-item">
+          <span class="feature-icon">✅</span>
+          <span class="feature-text">Unified navigation bar across all layouts</span>
+        </div>
+        <div class="feature-item">
+          <span class="feature-icon">✅</span>
+          <span class="feature-text">Layout switching functionality</span>
+        </div>
+        <div class="feature-item">
+          <span class="feature-icon">✅</span>
+          <span class="feature-text">Responsive design for mobile and desktop</span>
+        </div>
+        <div class="feature-item">
+          <span class="feature-icon">✅</span>
+          <span class="feature-text">Context-aware navigation items</span>
+        </div>
+        <div class="feature-item">
+          <span class="feature-icon">✅</span>
+          <span class="feature-text">User authentication integration</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Instructions -->
+    <div class="instructions">
+      <h2>Test Instructions</h2>
+      <ol class="instruction-list">
+        <li>Use the layout switching buttons above to change between Customer, Admin, and Delivery layouts</li>
+        <li>Notice how the navigation bar adapts to each layout with appropriate menu items</li>
+        <li>Test the navigation routes by clicking the route buttons</li>
+        <li>Try resizing your browser window to test responsive behavior</li>
+        <li>On mobile devices, test the hamburger menu functionality</li>
+      </ol>
+    </div>
+  </div>
+</div>

@@ -1,70 +1,66 @@
-import { Injectable } from '@angular/core';
-import {
-  HttpRequest,
-  HttpHandler,
-  HttpEvent,
-  HttpInterceptor,
-  HttpErrorResponse
-} from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
-import { catchError, switchMap } from 'rxjs/operators';
+import { HttpInterceptorFn, HttpErrorResponse } from '@angular/common/http';
+import { inject } from '@angular/core';
+import { catchError, switchMap, throwError } from 'rxjs';
 import { AuthService } from '../services/auth.service';
 import { Router } from '@angular/router';
+import { ResponseStatus } from '../models/response-status.enum';
 
-@Injectable()
-export class AuthInterceptor implements HttpInterceptor {
-  constructor(
-    private authService: AuthService,
-    private router: Router
-  ) {}
+export const authInterceptor: HttpInterceptorFn = (req, next) => {
+  const authService = inject(AuthService);
+  const router = inject(Router);
 
-  intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
-    const token = this.authService.getToken();
+  const token = authService.getToken();
+  let request = req;
 
-    if (token) {
-      request = request.clone({
-        setHeaders: {
-          Authorization: `Bearer ${token}`
+  // Add authorization header if token exists
+  if (token && !req.url.includes('/login') && !req.url.includes('/register')) {
+    request = req.clone({
+      setHeaders: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+  }
+
+  return next(request).pipe(
+    catchError((error: HttpErrorResponse) => {
+      if (error.status === ResponseStatus.Unauthorized && !req.url.includes('/login')) {
+        // Token expired or invalid
+        const refreshToken = authService.getRefreshToken();
+        if (refreshToken && !req.url.includes('/refresh-token')) {
+          return handleRefreshToken(req, next, authService, router);
+        } else {
+          authService.logout();
+          router.navigate(['/login']);
         }
-      });
-    }
+      }
+      return throwError(() => error);
+    })
+  );
+};
 
-    return next.handle(request).pipe(
-      catchError((error: HttpErrorResponse) => {
-        if (error.status === 401) {
-          // Token expired or invalid
-          const refreshToken = this.authService.getRefreshToken();
-          if (refreshToken) {
-            return this.handleRefreshToken(request, next);
-          } else {
-            this.authService.logout();
-            this.router.navigate(['/login']);
+function handleRefreshToken(originalReq: any, next: any, authService: AuthService, router: Router) {
+  return authService.refreshToken({
+    token: authService.getToken()!,
+    refreshToken: authService.getRefreshToken()!
+  }).pipe(
+    switchMap((response: any) => {
+      if (response.status === ResponseStatus.Success) {
+        authService.setTokens(response.data, authService.getRefreshToken()!);
+        const newRequest = originalReq.clone({
+          setHeaders: {
+            Authorization: `Bearer ${response.data}`
           }
-        }
-        return throwError(() => error);
-      })
-    );
-  }
-
-  private handleRefreshToken(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
-    return this.authService.refreshToken({
-      token: this.authService.getToken()!,
-      refreshToken: this.authService.getRefreshToken()!
-    }).pipe(
-      switchMap(response => {
-        if (response.status === 'Success') {
-          this.authService.setTokens(response.data, this.authService.getRefreshToken()!);
-          const newRequest = request.clone({
-            setHeaders: {
-              Authorization: `Bearer ${response.data}`
-            }
-          });
-          return next.handle(newRequest);
-        }
-        this.authService.logout();
-        this.router.navigate(['/login']);
-        return throwError(() => new Error('Token refresh failed'));
-      })
-    );
-  }
+        });
+        return next(newRequest);
+      }
+      authService.logout();
+      router.navigate(['/login']);
+      return throwError(() => new Error('Token refresh failed'));
+    }),
+    catchError(() => {
+      authService.logout();
+      router.navigate(['/login']);
+      return throwError(() => new Error('Token refresh failed'));
+    })
+  );
 }
