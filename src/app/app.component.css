@@ -1,5 +1,49 @@
 /* App Component Styles */
-.app-container {
-  position: relative;
-  min-height: 100vh;
+
+.main-content {
+  min-height: calc(100vh - 76px); /* Adjust based on header height */
+  background-color: var(--bs-body-bg);
+  color: var(--bs-body-color);
+  transition: var(--restaurant-transition);
+}
+
+/* Ensure proper spacing for fixed header */
+.main-content {
+  padding-top: 0;
+}
+
+/* Loading state */
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 50vh;
+}
+
+.loading-spinner {
+  color: var(--restaurant-primary);
+}
+
+/* Error state */
+.error-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 50vh;
+  text-align: center;
+  padding: 2rem;
+}
+
+.error-icon {
+  font-size: 3rem;
+  color: var(--bs-danger);
+  margin-bottom: 1rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .main-content {
+    min-height: calc(100vh - 70px); /* Smaller header on mobile */
+  }
 }

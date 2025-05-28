@@ -1,0 +1,124 @@
+.navbar {
+  box-shadow: var(--restaurant-card-shadow);
+  background-color: var(--bs-navbar-bg) !important;
+}
+
+.navbar-brand {
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.nav-link {
+  font-weight: 500;
+  transition: var(--restaurant-transition);
+  border-radius: 6px;
+  margin: 0 2px;
+}
+
+.nav-link:hover {
+  background-color: rgba(var(--bs-primary-rgb), 0.1);
+  color: var(--restaurant-primary) !important;
+}
+
+.nav-link.active {
+  background-color: rgba(var(--bs-primary-rgb), 0.15);
+  color: var(--restaurant-primary) !important;
+  font-weight: 600;
+}
+
+.btn-link.nav-link {
+  color: var(--bs-body-color);
+  text-decoration: none;
+}
+
+.btn-link.nav-link:hover {
+  color: var(--restaurant-primary);
+}
+
+.dropdown-menu {
+  border: 1px solid var(--bs-border-color);
+  box-shadow: var(--restaurant-card-shadow);
+  border-radius: var(--restaurant-border-radius);
+}
+
+.dropdown-item {
+  transition: var(--restaurant-transition);
+}
+
+.dropdown-item:hover {
+  background-color: rgba(var(--bs-primary-rgb), 0.1);
+  color: var(--restaurant-primary);
+}
+
+.dropdown-item i {
+  width: 16px;
+  text-align: center;
+}
+
+/* RTL Adjustments */
+[dir="rtl"] .navbar-brand {
+  margin-right: 0;
+  margin-left: auto;
+}
+
+[dir="rtl"] .me-1,
+[dir="rtl"] .me-2 {
+  margin-right: 0;
+  margin-left: 0.25rem;
+}
+
+[dir="rtl"] .me-2 {
+  margin-left: 0.5rem;
+}
+
+[dir="rtl"] .ms-1 {
+  margin-left: 0;
+  margin-right: 0.25rem;
+}
+
+[dir="rtl"] .ms-2 {
+  margin-left: 0;
+  margin-right: 0.5rem;
+}
+
+/* Mobile Responsive */
+@media (max-width: 991.98px) {
+  .navbar-nav {
+    padding-top: 0.5rem;
+  }
+  
+  .nav-item {
+    margin-bottom: 0.25rem;
+  }
+  
+  .dropdown-menu {
+    position: static !important;
+    transform: none !important;
+    border: none;
+    box-shadow: none;
+    background-color: transparent;
+  }
+  
+  .dropdown-item {
+    padding-left: 2rem;
+  }
+  
+  [dir="rtl"] .dropdown-item {
+    padding-left: 0.5rem;
+    padding-right: 2rem;
+  }
+}
+
+/* Theme specific adjustments */
+[data-bs-theme="dark"] .navbar {
+  border-bottom: 1px solid var(--bs-border-color);
+}
+
+/* Animation for theme toggle */
+.nav-link i {
+  transition: transform 0.3s ease;
+}
+
+.nav-link:hover i {
+  transform: scale(1.1);
+}

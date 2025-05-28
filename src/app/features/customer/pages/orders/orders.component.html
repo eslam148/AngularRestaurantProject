@@ -1,0 +1,229 @@
+<!-- Orders Page -->
+<div class="orders-page" [attr.dir]="isRTL() ? 'rtl' : 'ltr'">
+  <div class="container">
+
+    <!-- Page Header -->
+    <div class="orders-header">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item">
+            <a [routerLink]="['/customer']">{{ translate('nav.home') || 'Home' }}</a>
+          </li>
+          <li class="breadcrumb-item active" aria-current="page">
+            {{ translate('nav.orders') || 'Orders' }}
+          </li>
+        </ol>
+      </nav>
+
+      <div class="header-content">
+        <h1 class="page-title">{{ translate('orders.title') || 'Your Orders' }}</h1>
+        <p class="page-subtitle">{{ translate('orders.subtitle') || 'Track and manage your food orders' }}</p>
+      </div>
+    </div>
+
+    <!-- Filters and Search -->
+    <div class="orders-filters">
+      <div class="row align-items-center">
+
+        <!-- Search -->
+        <div class="col-md-4 mb-3">
+          <div class="search-box">
+            <i class="bi bi-search search-icon"></i>
+            <input type="text"
+                   class="form-control"
+                   [(ngModel)]="searchQuery"
+                   (input)="onSearchChange()"
+                   [placeholder]="translate('orders.search.placeholder') || 'Search orders...'">
+          </div>
+        </div>
+
+        <!-- Status Filter -->
+        <div class="col-md-3 mb-3">
+          <select class="form-select"
+                  [(ngModel)]="selectedStatus"
+                  (change)="onStatusFilterChange()">
+            <option value="all">{{ translate('orders.filter.allStatuses') || 'All Statuses' }}</option>
+            <option [value]="OrderStatus.PENDING">{{ getStatusText(OrderStatus.PENDING) }}</option>
+            <option [value]="OrderStatus.CONFIRMED">{{ getStatusText(OrderStatus.CONFIRMED) }}</option>
+            <option [value]="OrderStatus.PREPARING">{{ getStatusText(OrderStatus.PREPARING) }}</option>
+            <option [value]="OrderStatus.OUT_FOR_DELIVERY">{{ getStatusText(OrderStatus.OUT_FOR_DELIVERY) }}</option>
+            <option [value]="OrderStatus.DELIVERED">{{ getStatusText(OrderStatus.DELIVERED) }}</option>
+            <option [value]="OrderStatus.CANCELLED">{{ getStatusText(OrderStatus.CANCELLED) }}</option>
+          </select>
+        </div>
+
+        <!-- Sort Options -->
+        <div class="col-md-3 mb-3">
+          <select class="form-select"
+                  [(ngModel)]="sortBy"
+                  (change)="onSortChange()">
+            <option value="date">{{ translate('orders.sort.date') || 'Sort by Date' }}</option>
+            <option value="status">{{ translate('orders.sort.status') || 'Sort by Status' }}</option>
+            <option value="total">{{ translate('orders.sort.total') || 'Sort by Total' }}</option>
+          </select>
+        </div>
+
+        <!-- Sort Order -->
+        <div class="col-md-2 mb-3">
+          <select class="form-select"
+                  [(ngModel)]="sortOrder"
+                  (change)="onSortChange()">
+            <option value="desc">{{ translate('orders.sort.newest') || 'Newest First' }}</option>
+            <option value="asc">{{ translate('orders.sort.oldest') || 'Oldest First' }}</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loading State -->
+    <div class="loading-container" *ngIf="loading">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">{{ translate('common.loading') || 'Loading...' }}</span>
+      </div>
+      <p class="loading-text">{{ translate('orders.loading') || 'Loading your orders...' }}</p>
+    </div>
+
+    <!-- Orders List -->
+    <div class="orders-content" *ngIf="!loading">
+
+      <!-- Empty State -->
+      <div class="empty-orders" *ngIf="filteredOrders.length === 0 && !loading">
+        <div class="empty-orders-content">
+          <i class="bi bi-bag-x empty-orders-icon"></i>
+          <h3>{{ translate('orders.empty.title') || 'No Orders Found' }}</h3>
+          <p class="text-muted">
+            <span *ngIf="searchQuery || selectedStatus !== 'all'">
+              {{ translate('orders.empty.filtered') || 'No orders match your current filters.' }}
+            </span>
+            <span *ngIf="!searchQuery && selectedStatus === 'all'">
+              {{ translate('orders.empty.noOrders') || 'You haven\'t placed any orders yet.' }}
+            </span>
+          </p>
+          <button type="button" class="btn btn-primary" (click)="goToRestaurants()">
+            <i class="bi bi-shop me-2"></i>
+            {{ translate('orders.empty.browseRestaurants') || 'Browse Restaurants' }}
+          </button>
+        </div>
+      </div>
+
+      <!-- Orders Grid -->
+      <div class="orders-grid" *ngIf="filteredOrders.length > 0">
+        <div class="order-card"
+             *ngFor="let order of getPaginatedOrders(); trackBy: trackByOrder"
+             (click)="viewOrder(order.id)">
+
+          <!-- Order Header -->
+          <div class="order-header">
+            <div class="order-info">
+              <h5 class="order-number">{{ translate('orders.orderNumber') || 'Order' }} #{{ order.orderNumber }}</h5>
+              <div class="order-meta">
+                <span class="order-date">{{ formatDate(order.createdAt) }} {{ formatTime(order.createdAt) }}</span>
+              </div>
+            </div>
+
+            <div class="order-status">
+              <span class="badge" [class]="'bg-' + getStatusColor(order.status)">
+                <i class="bi" [class]="getStatusIcon(order.status)"></i>
+                {{ getStatusText(order.status) }}
+              </span>
+            </div>
+          </div>
+
+          <!-- Order Items Preview -->
+          <div class="order-items-preview">
+            <div class="items-summary">
+              <span class="items-count">
+                {{ order.items.length }} {{ order.items.length === 1 ? (translate('orders.item') || 'item') : (translate('orders.items') || 'items') }}
+              </span>
+              <span class="items-names">
+                {{ getItemsPreview(order) }}
+              </span>
+            </div>
+          </div>
+
+          <!-- Order Total -->
+          <div class="order-total">
+            <span class="total-label">{{ translate('orders.total') || 'Total' }}:</span>
+            <span class="total-amount">${{ formatPrice(order.total) }}</span>
+          </div>
+
+          <!-- Order Actions -->
+          <div class="order-actions" (click)="$event.stopPropagation()">
+            <button type="button"
+                    class="btn btn-outline-primary btn-sm"
+                    (click)="trackOrder(order.id)"
+                    *ngIf="canTrackOrder(order)">
+              <i class="bi bi-geo-alt me-1"></i>
+              {{ translate('orders.actions.track') || 'Track' }}
+            </button>
+
+            <button type="button"
+                    class="btn btn-outline-secondary btn-sm"
+                    (click)="reorder(order)"
+                    *ngIf="canReorder(order)">
+              <i class="bi bi-arrow-clockwise me-1"></i>
+              {{ translate('orders.actions.reorder') || 'Reorder' }}
+            </button>
+
+            <button type="button"
+                    class="btn btn-outline-danger btn-sm"
+                    (click)="cancelOrder(order)"
+                    *ngIf="canCancelOrder(order)">
+              <i class="bi bi-x-circle me-1"></i>
+              {{ translate('orders.actions.cancel') || 'Cancel' }}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pagination -->
+      <div class="pagination-container" *ngIf="totalPages > 1">
+        <nav aria-label="Orders pagination">
+          <ul class="pagination justify-content-center">
+
+            <!-- Previous Button -->
+            <li class="page-item" [class.disabled]="currentPage === 1">
+              <button class="page-link"
+                      (click)="onPageChange(currentPage - 1)"
+                      [disabled]="currentPage === 1">
+                <i class="bi bi-chevron-left"></i>
+                {{ translate('pagination.previous') || 'Previous' }}
+              </button>
+            </li>
+
+            <!-- Page Numbers -->
+            <li class="page-item"
+                *ngFor="let page of getPageNumbers()"
+                [class.active]="page === currentPage">
+              <button class="page-link" (click)="onPageChange(page)">
+                {{ page }}
+              </button>
+            </li>
+
+            <!-- Next Button -->
+            <li class="page-item" [class.disabled]="currentPage === totalPages">
+              <button class="page-link"
+                      (click)="onPageChange(currentPage + 1)"
+                      [disabled]="currentPage === totalPages">
+                {{ translate('pagination.next') || 'Next' }}
+                <i class="bi bi-chevron-right"></i>
+              </button>
+            </li>
+          </ul>
+        </nav>
+
+        <!-- Results Info -->
+        <div class="results-info">
+          <small class="text-muted">
+            {{ translate('pagination.showing') || 'Showing' }}
+            {{ (currentPage - 1) * itemsPerPage + 1 }} -
+            {{ getMinValue(currentPage * itemsPerPage, filteredOrders.length) }}
+            {{ translate('pagination.of') || 'of' }}
+            {{ filteredOrders.length }}
+            {{ translate('pagination.results') || 'results' }}
+          </small>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

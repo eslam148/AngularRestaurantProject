@@ -1,0 +1,166 @@
+<!-- Cart Sidebar -->
+<div class="cart-backdrop" 
+     [class.show]="isVisible" 
+     [attr.dir]="isRTL() ? 'rtl' : 'ltr'"
+     (click)="onBackdropClick($event)"
+     *ngIf="isVisible">
+  
+  <div class="cart-sidebar" [class.show]="isVisible">
+    
+    <!-- Cart Header -->
+    <div class="cart-header">
+      <div class="header-content">
+        <h4 class="cart-title">
+          <i class="bi bi-cart3 me-2"></i>
+          {{ translate('cart.title') || 'Your Cart' }}
+          <span class="item-count" *ngIf="cartCount > 0">({{ cartCount }})</span>
+        </h4>
+        <button type="button" class="btn-close" (click)="onCloseClick()" [attr.aria-label]="translate('common.close') || 'Close'">
+          <i class="bi bi-x-lg"></i>
+        </button>
+      </div>
+      
+      <!-- Clear Cart Button -->
+      <div class="header-actions" *ngIf="!isEmpty()">
+        <button type="button" class="btn btn-outline-danger btn-sm" (click)="onClearCart()">
+          <i class="bi bi-trash me-1"></i>
+          {{ translate('cart.clear') || 'Clear Cart' }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Cart Content -->
+    <div class="cart-content">
+      
+      <!-- Empty Cart State -->
+      <div class="empty-cart" *ngIf="isEmpty()">
+        <div class="empty-cart-icon">
+          <i class="bi bi-cart-x"></i>
+        </div>
+        <h5 class="empty-cart-title">{{ translate('cart.empty') || 'Your cart is empty' }}</h5>
+        <p class="empty-cart-message">
+          {{ translate('cart.emptyMessage') || 'Add some delicious items to get started!' }}
+        </p>
+      </div>
+
+      <!-- Cart Items -->
+      <div class="cart-items" *ngIf="!isEmpty()">
+        <div class="cart-item" *ngFor="let item of cartItems; trackBy: trackByCartItem">
+          
+          <!-- Item Image -->
+          <div class="item-image">
+            <img [src]="item.menuItem.image" [alt]="item.menuItem.name" loading="lazy">
+          </div>
+
+          <!-- Item Details -->
+          <div class="item-details">
+            <div class="item-header">
+              <h6 class="item-name">
+                {{ item.menuItem.name }}
+                <span class="dietary-icons ms-1">
+                  <span *ngFor="let icon of getDietaryIcons(item)">{{ icon }}</span>
+                </span>
+              </h6>
+              <button type="button" class="btn-remove" (click)="onRemoveItem(item)" [attr.aria-label]="translate('cart.removeItem') || 'Remove item'">
+                <i class="bi bi-x"></i>
+              </button>
+            </div>
+
+            <!-- Customizations -->
+            <div class="item-customizations" *ngIf="getCustomizationSummary(item)">
+              <small class="text-muted">{{ getCustomizationSummary(item) }}</small>
+            </div>
+
+            <!-- Special Instructions -->
+            <div class="item-instructions" *ngIf="item.specialInstructions">
+              <small class="text-muted">
+                <i class="bi bi-chat-left-text me-1"></i>
+                {{ item.specialInstructions }}
+              </small>
+            </div>
+
+            <!-- Quantity and Price -->
+            <div class="item-footer">
+              <div class="quantity-controls">
+                <button type="button" 
+                        class="btn btn-outline-secondary btn-sm" 
+                        (click)="onQuantityDecrease(item)"
+                        [attr.aria-label]="translate('cart.decreaseQuantity') || 'Decrease quantity'">
+                  <i class="bi bi-dash"></i>
+                </button>
+                <span class="quantity">{{ item.quantity }}</span>
+                <button type="button" 
+                        class="btn btn-outline-secondary btn-sm" 
+                        (click)="onQuantityIncrease(item)"
+                        [attr.aria-label]="translate('cart.increaseQuantity') || 'Increase quantity'">
+                  <i class="bi bi-plus"></i>
+                </button>
+              </div>
+              
+              <div class="item-price">
+                <span class="price">${{ formatPrice(getItemSubtotal(item)) }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cart Summary -->
+    <div class="cart-summary" *ngIf="!isEmpty() && cart">
+      
+      <!-- Minimum Order Warning -->
+      <div class="minimum-order-warning" *ngIf="getMinimumOrderMessage()">
+        <div class="alert alert-warning">
+          <i class="bi bi-exclamation-triangle me-2"></i>
+          {{ getMinimumOrderMessage() }}
+        </div>
+      </div>
+
+      <!-- Price Breakdown -->
+      <div class="price-breakdown">
+        <div class="price-row">
+          <span class="price-label">{{ translate('cart.subtotal') || 'Subtotal' }}</span>
+          <span class="price-value">${{ formatPrice(cart.subtotal) }}</span>
+        </div>
+        
+        <div class="price-row">
+          <span class="price-label">{{ translate('cart.tax') || 'Tax' }}</span>
+          <span class="price-value">${{ formatPrice(cart.tax) }}</span>
+        </div>
+        
+        <div class="price-row">
+          <span class="price-label">{{ translate('cart.deliveryFee') || 'Delivery Fee' }}</span>
+          <span class="price-value" [class.free-delivery]="cart.deliveryFee === 0">
+            {{ getDeliveryFeeText() }}
+          </span>
+        </div>
+        
+        <hr class="price-divider">
+        
+        <div class="price-row total-row">
+          <span class="price-label">{{ translate('cart.total') || 'Total' }}</span>
+          <span class="price-value total-price">${{ formatPrice(cart.total) }}</span>
+        </div>
+      </div>
+
+      <!-- Checkout Button -->
+      <div class="checkout-section">
+        <button type="button" 
+                class="btn btn-primary btn-lg w-100 checkout-btn" 
+                (click)="onCheckoutClick()"
+                [disabled]="!canCheckout()">
+          <i class="bi bi-credit-card me-2"></i>
+          {{ translate('cart.checkout') || 'Proceed to Checkout' }}
+        </button>
+        
+        <!-- Continue Shopping -->
+        <button type="button" 
+                class="btn btn-link w-100 continue-shopping-btn" 
+                (click)="onCloseClick()">
+          {{ translate('cart.continueShopping') || 'Continue Shopping' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

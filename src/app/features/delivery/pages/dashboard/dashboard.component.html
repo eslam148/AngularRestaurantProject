@@ -1,0 +1,92 @@
+<div class="delivery-dashboard">
+  <!-- Status Header -->
+  <div class="status-header">
+    <h1>{{ i18nService.translate('delivery.dashboard.welcome') }}</h1>
+    <div class="status-toggle-container">
+      <button 
+        class="status-toggle"
+        [class.online]="isOnline"
+        [class.offline]="!isOnline"
+        (click)="toggleOnlineStatus()">
+        <div class="status-indicator"></div>
+        <span>{{ isOnline ? i18nService.translate('delivery.online') : i18nService.translate('delivery.offline') }}</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Today's Stats -->
+  <div class="stats-section">
+    <h2>{{ i18nService.translate('delivery.dashboard.todayStats') }}</h2>
+    <div class="stats-grid">
+      <div *ngFor="let stat of todayStats" class="stat-card">
+        <div class="stat-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12,6 12,12 16,14"></polyline>
+          </svg>
+        </div>
+        <div class="stat-content">
+          <div class="stat-value">{{ stat.value }}</div>
+          <div class="stat-title">{{ stat.title }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pending Orders -->
+  <div class="orders-section" *ngIf="isOnline">
+    <h2>{{ i18nService.translate('delivery.dashboard.pendingOrders') }}</h2>
+    <div class="orders-list">
+      <div *ngFor="let order of pendingOrders" class="order-card">
+        <div class="order-header">
+          <span class="order-id">{{ order.id }}</span>
+          <span class="order-amount">{{ order.amount }}</span>
+        </div>
+        <div class="order-details">
+          <div class="restaurant-name">{{ order.restaurant }}</div>
+          <div class="customer-info">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+            {{ order.customer }}
+          </div>
+          <div class="address-info">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+              <circle cx="12" cy="10" r="3"></circle>
+            </svg>
+            {{ order.address }}
+          </div>
+          <div class="delivery-info">
+            <span class="distance">{{ order.distance }}</span>
+            <span class="time">{{ order.time }}</span>
+          </div>
+        </div>
+        <div class="order-actions">
+          <button class="decline-btn" (click)="declineOrder(order.id)">
+            {{ i18nService.translate('delivery.actions.decline') }}
+          </button>
+          <button class="accept-btn" (click)="acceptOrder(order.id)">
+            {{ i18nService.translate('delivery.actions.accept') }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Offline Message -->
+  <div class="offline-message" *ngIf="!isOnline">
+    <div class="offline-icon">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="10"></circle>
+        <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line>
+      </svg>
+    </div>
+    <h3>{{ i18nService.translate('delivery.offline.title') }}</h3>
+    <p>{{ i18nService.translate('delivery.offline.message') }}</p>
+    <button class="go-online-btn" (click)="toggleOnlineStatus()">
+      {{ i18nService.translate('delivery.actions.goOnline') }}
+    </button>
+  </div>
+</div>

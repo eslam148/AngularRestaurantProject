@@ -1,0 +1,176 @@
+<!-- Item Customization Modal -->
+<div class="modal-backdrop" 
+     [class.show]="isVisible" 
+     [attr.dir]="isRTL() ? 'rtl' : 'ltr'"
+     (click)="onBackdropClick($event)"
+     *ngIf="isVisible">
+  
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <div class="item-header">
+          <div class="item-image">
+            <img [src]="menuItem.image" [alt]="menuItem.name" class="img-fluid">
+            <div class="item-badges" *ngIf="menuItem.isPopular || menuItem.isSpicy">
+              <span class="badge bg-success" *ngIf="menuItem.isPopular">
+                <i class="bi bi-star"></i> {{ translate('menu.popular') || 'Popular' }}
+              </span>
+              <span class="badge bg-warning" *ngIf="menuItem.isSpicy">🌶️</span>
+            </div>
+          </div>
+          
+          <div class="item-info">
+            <h4 class="item-name">
+              {{ menuItem.name }}
+              <span class="dietary-icons ms-2">
+                <span *ngFor="let icon of getDietaryIcons()">{{ icon }}</span>
+              </span>
+            </h4>
+            <p class="item-description">{{ menuItem.description }}</p>
+            <div class="item-meta">
+              <span class="base-price">${{ formatPrice(menuItem.price) }}</span>
+              <span class="prep-time" *ngIf="menuItem.preparationTime">
+                <i class="bi bi-clock"></i> {{ menuItem.preparationTime }} min
+              </span>
+              <span class="calories" *ngIf="menuItem.calories">
+                <i class="bi bi-lightning"></i> {{ menuItem.calories }} cal
+              </span>
+            </div>
+          </div>
+        </div>
+        
+        <button type="button" class="btn-close" (click)="onCancelClick()" [attr.aria-label]="translate('common.close') || 'Close'"></button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="modal-body">
+        
+        <!-- Quantity Selector -->
+        <div class="quantity-section mb-4">
+          <label class="form-label fw-bold">{{ translate('cart.quantity') || 'Quantity' }}</label>
+          <div class="quantity-controls">
+            <button type="button" 
+                    class="btn btn-outline-secondary" 
+                    (click)="quantity = quantity - 1; onQuantityChange()"
+                    [disabled]="quantity <= 1">
+              <i class="bi bi-dash"></i>
+            </button>
+            <input type="number" 
+                   class="form-control quantity-input" 
+                   [(ngModel)]="quantity" 
+                   (ngModelChange)="onQuantityChange()"
+                   min="1" 
+                   max="10">
+            <button type="button" 
+                    class="btn btn-outline-secondary" 
+                    (click)="quantity = quantity + 1; onQuantityChange()"
+                    [disabled]="quantity >= 10">
+              <i class="bi bi-plus"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Customizations -->
+        <div class="customizations-section" *ngIf="menuItem.customizations.length > 0">
+          <div class="customization-group" *ngFor="let customization of menuItem.customizations">
+            
+            <div class="customization-header">
+              <label class="form-label fw-bold">
+                {{ customization.name }}
+                <span class="text-danger" *ngIf="customization.isRequired">*</span>
+              </label>
+            </div>
+
+            <!-- Single Select (Radio) -->
+            <div class="customization-options" *ngIf="customization.type === CustomizationType.SINGLE_SELECT">
+              <div class="form-check" *ngFor="let option of customization.options">
+                <input class="form-check-input" 
+                       type="radio" 
+                       [name]="'customization-' + customization.id"
+                       [id]="'option-' + option.id"
+                       [checked]="isOptionSelected(customization.id, option.id)"
+                       (change)="onSingleSelectChange(customization.id, option.id)">
+                <label class="form-check-label" [for]="'option-' + option.id">
+                  <div class="option-content">
+                    <span class="option-name">{{ option.name }}</span>
+                    <span class="option-price" *ngIf="option.price > 0">
+                      +${{ formatPrice(option.price) }}
+                    </span>
+                  </div>
+                </label>
+              </div>
+            </div>
+
+            <!-- Multi Select (Checkbox) -->
+            <div class="customization-options" *ngIf="customization.type === CustomizationType.MULTI_SELECT">
+              <div class="form-check" *ngFor="let option of customization.options">
+                <input class="form-check-input" 
+                       type="checkbox" 
+                       [id]="'option-' + option.id"
+                       [checked]="isOptionSelected(customization.id, option.id)"
+                       (change)="onMultiSelectChange(customization.id, option.id, $any($event.target).checked)">
+                <label class="form-check-label" [for]="'option-' + option.id">
+                  <div class="option-content">
+                    <span class="option-name">{{ option.name }}</span>
+                    <span class="option-price" *ngIf="option.price > 0">
+                      +${{ formatPrice(option.price) }}
+                    </span>
+                  </div>
+                </label>
+              </div>
+            </div>
+
+            <!-- Text Input -->
+            <div class="customization-options" *ngIf="customization.type === CustomizationType.TEXT_INPUT">
+              <input type="text" 
+                     class="form-control" 
+                     [placeholder]="translate('menu.customization.textPlaceholder') || 'Enter your preference...'"
+                     [value]="getTextValue(customization.id)"
+                     (input)="onTextInputChange(customization.id, $any($event.target).value)">
+            </div>
+          </div>
+        </div>
+
+        <!-- Special Instructions -->
+        <div class="special-instructions-section mt-4">
+          <label class="form-label fw-bold">
+            {{ translate('menu.specialInstructions') || 'Special Instructions' }}
+            <small class="text-muted">({{ translate('common.optional') || 'Optional' }})</small>
+          </label>
+          <textarea class="form-control" 
+                    rows="3" 
+                    [(ngModel)]="specialInstructions"
+                    [placeholder]="translate('menu.specialInstructions.placeholder') || 'Any special requests or dietary notes...'">
+          </textarea>
+        </div>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="modal-footer">
+        <div class="footer-content">
+          <div class="total-price">
+            <span class="total-label">{{ translate('cart.total') || 'Total' }}:</span>
+            <span class="total-amount">${{ formatPrice(totalPrice) }}</span>
+          </div>
+          
+          <div class="action-buttons">
+            <button type="button" 
+                    class="btn btn-outline-secondary" 
+                    (click)="onCancelClick()">
+              {{ translate('common.cancel') || 'Cancel' }}
+            </button>
+            <button type="button" 
+                    class="btn btn-primary" 
+                    (click)="onConfirmClick()"
+                    [disabled]="!isFormValid()">
+              <i class="bi bi-cart-plus me-2"></i>
+              {{ translate('menu.addToCart') || 'Add to Cart' }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

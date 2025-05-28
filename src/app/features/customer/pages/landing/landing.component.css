@@ -1,0 +1,232 @@
+/* Landing Page Styles */
+
+.landing-page {
+  background-color: var(--bs-body-bg);
+  color: var(--bs-body-color);
+}
+
+/* Hero Section */
+.hero-section {
+  background: linear-gradient(135deg, var(--restaurant-primary) 0%, var(--restaurant-secondary) 100%);
+  color: white;
+  padding: 4rem 0;
+}
+
+.hero-title {
+  font-size: 3.5rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  line-height: 1.2;
+}
+
+.hero-subtitle {
+  font-size: 1.25rem;
+  margin-bottom: 2rem;
+  opacity: 0.9;
+}
+
+.hero-actions .btn {
+  padding: 0.75rem 2rem;
+  font-weight: 600;
+  border-radius: 50px;
+  transition: var(--restaurant-transition);
+}
+
+.hero-image img {
+  border-radius: 1rem;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+/* Section Styles */
+.section-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--restaurant-text);
+  margin-bottom: 1rem;
+}
+
+.section-subtitle {
+  font-size: 1.1rem;
+  color: var(--bs-secondary);
+  margin-bottom: 0;
+}
+
+/* Offers Section */
+.offers-section {
+  background-color: var(--bs-body-bg);
+}
+
+.offer-card {
+  border: none;
+  border-radius: var(--restaurant-border-radius);
+  overflow: hidden;
+  transition: var(--restaurant-transition);
+  cursor: pointer;
+}
+
+.offer-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+.card-img-wrapper {
+  position: relative;
+  overflow: hidden;
+}
+
+.card-img-top {
+  height: 200px;
+  object-fit: cover;
+  transition: var(--restaurant-transition);
+}
+
+.offer-card:hover .card-img-top {
+  transform: scale(1.05);
+}
+
+.offer-badge {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: var(--restaurant-primary);
+  color: white;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+}
+
+.offer-code .badge {
+  font-size: 0.9rem;
+  padding: 0.5rem 1rem;
+  letter-spacing: 1px;
+}
+
+/* Featured Restaurants */
+.featured-restaurants {
+  background-color: var(--bs-light);
+}
+
+.restaurant-card {
+  border: none;
+  border-radius: var(--restaurant-border-radius);
+  overflow: hidden;
+  transition: var(--restaurant-transition);
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+}
+
+.restaurant-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  text-decoration: none;
+  color: inherit;
+}
+
+.restaurant-rating {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.restaurant-info {
+  font-size: 0.9rem;
+  color: var(--bs-secondary);
+}
+
+.restaurant-info i {
+  color: var(--restaurant-primary);
+}
+
+/* How It Works */
+.how-it-works {
+  background-color: var(--bs-body-bg);
+}
+
+.step-icon {
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, var(--restaurant-primary), var(--restaurant-secondary));
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.5rem;
+  color: white;
+  font-size: 2rem;
+}
+
+.step-icon i {
+  color: white;
+}
+
+/* RTL Support */
+[dir="rtl"] .hero-actions .me-3 {
+  margin-right: 0;
+  margin-left: 1rem;
+}
+
+[dir="rtl"] .restaurant-info .me-1 {
+  margin-right: 0;
+  margin-left: 0.25rem;
+}
+
+[dir="rtl"] .btn .ms-2 {
+  margin-left: 0;
+  margin-right: 0.5rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .hero-title {
+    font-size: 2.5rem;
+  }
+  
+  .hero-subtitle {
+    font-size: 1.1rem;
+  }
+  
+  .section-title {
+    font-size: 2rem;
+  }
+  
+  .hero-actions .btn {
+    display: block;
+    width: 100%;
+    margin-bottom: 1rem;
+  }
+  
+  .hero-actions .me-3 {
+    margin-right: 0;
+  }
+  
+  [dir="rtl"] .hero-actions .me-3 {
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 576px) {
+  .hero-section {
+    padding: 2rem 0;
+  }
+  
+  .hero-title {
+    font-size: 2rem;
+  }
+  
+  .section-title {
+    font-size: 1.75rem;
+  }
+}

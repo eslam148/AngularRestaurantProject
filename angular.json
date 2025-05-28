@@ -3,20 +3,31 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "AngularRestaurantProject": {
+    "RestaurantApp": {
       "projectType": "application",
       "schematics": {},
       "root": "",
       "sourceRoot": "src",
       "prefix": "app",
+      "i18n": {
+        "sourceLocale": "en-US",
+        "locales": {
+          "ar": {
+            "translation": "src/locale/messages.ar.xlf",
+            "baseHref": "/ar/"
+          }
+        }
+      },
       "architect": {
-        "build": {          "builder": "@angular-devkit/build-angular:browser",
+        "build": {
+          "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/angular-restaurant-project",
+            "outputPath": "dist/restaurant-app",
             "index": "src/index.html",
-            "main": "src/main.ts",
+            "browser": "src/main.ts",
             "polyfills": [
-              "zone.js"
+              "zone.js",
+              "@angular/localize/init"
             ],
             "tsConfig": "tsconfig.app.json",
             "assets": [
@@ -26,9 +37,13 @@
               }
             ],
             "styles": [
+              "node_modules/bootstrap/dist/css/bootstrap.min.css",
+              "node_modules/bootstrap-icons/font/bootstrap-icons.css",
               "src/styles.css"
             ],
-            "scripts": []
+            "scripts": [
+              "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"
+            ]
           },
           "configurations": {
             "production": {
@@ -50,6 +65,11 @@
               "optimization": false,
               "extractLicenses": false,
               "sourceMap": true
+            },
+            "ar": {
+              "aot": true,
+              "outputPath": "dist/restaurant-app/ar/",
+              "i18nMissingTranslation": "warning"
             }
           },
           "defaultConfiguration": "production"
@@ -58,10 +78,13 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "AngularRestaurantProject:build:production"
+              "buildTarget": "RestaurantApp:build:production"
             },
             "development": {
-              "buildTarget": "AngularRestaurantProject:build:development"
+              "buildTarget": "RestaurantApp:build:development"
+            },
+            "ar": {
+              "buildTarget": "RestaurantApp:build:ar"
             }
           },
           "defaultConfiguration": "development"
@@ -74,7 +97,8 @@
           "options": {
             "polyfills": [
               "zone.js",
-              "zone.js/testing"
+              "zone.js/testing",
+              "@angular/localize/init"
             ],
             "tsConfig": "tsconfig.spec.json",
             "assets": [
@@ -84,6 +108,8 @@
               }
             ],
             "styles": [
+              "node_modules/bootstrap/dist/css/bootstrap.min.css",
+              "node_modules/bootstrap-icons/font/bootstrap-icons.css",
               "src/styles.css"
             ],
             "scripts": []

@@ -1,0 +1,455 @@
+/* Item Customization Modal Styles */
+
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1050;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  padding: 1rem;
+}
+
+.modal-backdrop.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.modal-dialog {
+  max-width: 600px;
+  width: 100%;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  transform: scale(0.9);
+  transition: transform 0.3s ease;
+}
+
+.modal-backdrop.show .modal-dialog {
+  transform: scale(1);
+}
+
+.modal-content {
+  background-color: var(--bs-card-bg);
+  border-radius: var(--restaurant-border-radius);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--bs-border-color);
+  display: flex;
+  flex-direction: column;
+  max-height: 100%;
+  overflow: hidden;
+}
+
+/* Modal Header */
+.modal-header {
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--bs-border-color);
+  position: relative;
+}
+
+.item-header {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.item-image {
+  position: relative;
+  width: 120px;
+  height: 90px;
+  flex-shrink: 0;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.item-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.item-badges {
+  position: absolute;
+  top: 0.5rem;
+  left: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.item-badges .badge {
+  font-size: 0.7rem;
+  padding: 0.25rem 0.5rem;
+}
+
+.item-info {
+  flex: 1;
+}
+
+.item-name {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--restaurant-text);
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+}
+
+.dietary-icons {
+  font-size: 0.9rem;
+}
+
+.item-description {
+  color: var(--bs-secondary);
+  font-size: 0.9rem;
+  line-height: 1.5;
+  margin-bottom: 0.75rem;
+}
+
+.item-meta {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 0.85rem;
+}
+
+.base-price {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--restaurant-primary);
+}
+
+.prep-time,
+.calories {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  color: var(--bs-secondary);
+}
+
+.btn-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  font-size: 1.25rem;
+  color: var(--bs-secondary);
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 50%;
+  transition: var(--restaurant-transition);
+}
+
+.btn-close:hover {
+  background-color: rgba(var(--bs-secondary-rgb), 0.1);
+  color: var(--restaurant-primary);
+}
+
+/* Modal Body */
+.modal-body {
+  padding: 1.5rem;
+  overflow-y: auto;
+  flex: 1;
+}
+
+/* Quantity Section */
+.quantity-section .form-label {
+  color: var(--restaurant-text);
+  margin-bottom: 0.75rem;
+}
+
+.quantity-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: fit-content;
+}
+
+.quantity-controls .btn {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  font-size: 1.1rem;
+}
+
+.quantity-input {
+  width: 80px;
+  text-align: center;
+  font-weight: 600;
+  border-radius: 8px;
+}
+
+/* Customizations */
+.customizations-section {
+  margin-top: 1.5rem;
+}
+
+.customization-group {
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--bs-border-color);
+}
+
+.customization-group:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.customization-header {
+  margin-bottom: 1rem;
+}
+
+.customization-header .form-label {
+  color: var(--restaurant-text);
+  font-size: 1rem;
+  margin-bottom: 0;
+}
+
+.customization-options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.form-check {
+  margin-bottom: 0;
+  padding-left: 0;
+}
+
+.form-check-input {
+  margin-right: 0.75rem;
+  margin-top: 0.125rem;
+}
+
+.form-check-input:checked {
+  background-color: var(--restaurant-primary);
+  border-color: var(--restaurant-primary);
+}
+
+.form-check-label {
+  cursor: pointer;
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid var(--bs-border-color);
+  border-radius: 8px;
+  transition: var(--restaurant-transition);
+  background-color: var(--bs-body-bg);
+}
+
+.form-check-label:hover {
+  border-color: var(--restaurant-primary);
+  background-color: rgba(var(--bs-primary-rgb), 0.05);
+}
+
+.form-check-input:checked + .form-check-label {
+  border-color: var(--restaurant-primary);
+  background-color: rgba(var(--bs-primary-rgb), 0.1);
+}
+
+.option-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.option-name {
+  font-weight: 500;
+  color: var(--bs-body-color);
+}
+
+.option-price {
+  font-weight: 600;
+  color: var(--restaurant-primary);
+  font-size: 0.9rem;
+}
+
+/* Special Instructions */
+.special-instructions-section .form-label {
+  color: var(--restaurant-text);
+  margin-bottom: 0.75rem;
+}
+
+.special-instructions-section textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+/* Modal Footer */
+.modal-footer {
+  padding: 1.5rem;
+  border-top: 1px solid var(--bs-border-color);
+  background-color: var(--bs-light);
+}
+
+.footer-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.total-price {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.total-label {
+  font-size: 0.9rem;
+  color: var(--bs-secondary);
+  margin-bottom: 0.25rem;
+}
+
+.total-amount {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--restaurant-primary);
+}
+
+.action-buttons {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.action-buttons .btn {
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  border-radius: 8px;
+}
+
+/* RTL Support */
+[dir="rtl"] .btn-close {
+  right: auto;
+  left: 1rem;
+}
+
+[dir="rtl"] .form-check-input {
+  margin-right: 0;
+  margin-left: 0.75rem;
+}
+
+[dir="rtl"] .me-2 {
+  margin-right: 0;
+  margin-left: 0.5rem;
+}
+
+[dir="rtl"] .ms-2 {
+  margin-left: 0;
+  margin-right: 0.5rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .modal-backdrop {
+    padding: 0.5rem;
+  }
+  
+  .modal-dialog {
+    max-height: 95vh;
+  }
+  
+  .modal-header,
+  .modal-body,
+  .modal-footer {
+    padding: 1rem;
+  }
+  
+  .item-header {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .item-image {
+    width: 100%;
+    height: 150px;
+  }
+  
+  .footer-content {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: stretch;
+  }
+  
+  .total-price {
+    align-items: center;
+    text-align: center;
+  }
+  
+  .action-buttons {
+    justify-content: center;
+  }
+  
+  .action-buttons .btn {
+    flex: 1;
+  }
+}
+
+@media (max-width: 576px) {
+  .quantity-controls {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .quantity-input {
+    flex: 1;
+    max-width: 100px;
+  }
+}
+
+/* Dark theme adjustments */
+[data-bs-theme="dark"] .modal-footer {
+  background-color: var(--bs-dark);
+}
+
+[data-bs-theme="dark"] .form-check-label {
+  background-color: var(--bs-dark);
+}
+
+[data-bs-theme="dark"] .form-check-label:hover {
+  background-color: rgba(var(--bs-primary-rgb), 0.1);
+}
+
+/* Animation for form validation */
+.form-check-input:invalid + .form-check-label {
+  border-color: var(--bs-danger);
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Smooth scrolling for modal body */
+.modal-body {
+  scrollbar-width: thin;
+  scrollbar-color: var(--restaurant-primary) var(--bs-light);
+}
+
+.modal-body::-webkit-scrollbar {
+  width: 6px;
+}
+
+.modal-body::-webkit-scrollbar-track {
+  background: var(--bs-light);
+  border-radius: 3px;
+}
+
+.modal-body::-webkit-scrollbar-thumb {
+  background: var(--restaurant-primary);
+  border-radius: 3px;
+}
+
+.modal-body::-webkit-scrollbar-thumb:hover {
+  background: var(--restaurant-secondary);
+}

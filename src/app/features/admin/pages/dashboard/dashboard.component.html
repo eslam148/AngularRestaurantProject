@@ -1,0 +1,106 @@
+<div class="admin-dashboard">
+  <!-- Page Header -->
+  <div class="page-header">
+    <h1>{{ i18nService.translate('admin.nav.dashboard') }}</h1>
+    <p>{{ i18nService.translate('admin.dashboard.welcome') }}</p>
+  </div>
+
+  <!-- Stats Grid -->
+  <div class="stats-grid">
+    <div *ngFor="let stat of dashboardStats" class="stat-card">
+      <div class="stat-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="7" height="7"></rect>
+          <rect x="14" y="3" width="7" height="7"></rect>
+          <rect x="14" y="14" width="7" height="7"></rect>
+          <rect x="3" y="14" width="7" height="7"></rect>
+        </svg>
+      </div>
+      <div class="stat-content">
+        <h3>{{ stat.title }}</h3>
+        <div class="stat-value">{{ stat.value }}</div>
+        <div class="stat-change positive">{{ stat.change }}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Actions -->
+  <div class="quick-actions">
+    <h2>{{ i18nService.translate('admin.dashboard.quickActions') }}</h2>
+    <div class="actions-grid">
+      <button class="action-btn">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+          <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+        </svg>
+        {{ i18nService.translate('admin.actions.viewOrders') }}
+      </button>
+      <button class="action-btn">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"></path>
+          <path d="M7 2v20"></path>
+          <path d="M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3z"></path>
+        </svg>
+        {{ i18nService.translate('admin.actions.manageRestaurants') }}
+      </button>
+      <button class="action-btn">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+          <circle cx="9" cy="7" r="4"></circle>
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+          <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+        </svg>
+        {{ i18nService.translate('admin.actions.manageUsers') }}
+      </button>
+      <button class="action-btn">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="22,12 18,12 15,21 9,3 6,12 2,12"></polyline>
+        </svg>
+        {{ i18nService.translate('admin.actions.viewAnalytics') }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Recent Activity -->
+  <div class="recent-activity">
+    <h2>{{ i18nService.translate('admin.dashboard.recentActivity') }}</h2>
+    <div class="activity-list">
+      <div class="activity-item" *ngFor="let activity of recentActivity">
+        <div class="activity-icon">
+          <span class="activity-emoji">{{ getActivityIcon(activity.type) }}</span>
+        </div>
+        <div class="activity-content">
+          <p>{{ activity.message }}</p>
+          <span class="activity-time">{{ activity.time }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recent Orders -->
+  <div class="recent-orders" *ngIf="recentOrders.length > 0">
+    <h2>{{ i18nService.translate('admin.dashboard.recentOrders') }}</h2>
+    <div class="orders-table">
+      <div class="table-header">
+        <div class="col-order">{{ i18nService.translate('admin.orders.orderNumber') }}</div>
+        <div class="col-customer">{{ i18nService.translate('admin.orders.customer') }}</div>
+        <div class="col-restaurant">{{ i18nService.translate('admin.orders.restaurant') }}</div>
+        <div class="col-amount">{{ i18nService.translate('admin.orders.amount') }}</div>
+        <div class="col-status">{{ i18nService.translate('admin.orders.status') }}</div>
+        <div class="col-time">{{ i18nService.translate('admin.orders.time') }}</div>
+      </div>
+      <div class="table-row" *ngFor="let order of recentOrders">
+        <div class="col-order">{{ order.id }}</div>
+        <div class="col-customer">{{ order.customer }}</div>
+        <div class="col-restaurant">{{ order.restaurant }}</div>
+        <div class="col-amount">{{ order.amount }}</div>
+        <div class="col-status">
+          <span class="status-badge" [ngClass]="getStatusClass(order.status)">
+            {{ i18nService.translate('admin.status.' + order.status) || order.status }}
+          </span>
+        </div>
+        <div class="col-time">{{ order.time }}</div>
+      </div>
+    </div>
+  </div>
+</div>

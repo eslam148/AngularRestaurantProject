@@ -1,0 +1,130 @@
+<!-- Login Page -->
+<div class="auth-page" [attr.dir]="i18nService.isRTL() ? 'rtl' : 'ltr'">
+  <div class="auth-container">
+    <!-- Header -->
+    <div class="auth-header">
+      <h1>{{ i18nService.translate('auth.login.title') || 'Welcome Back' }}</h1>
+      <p>{{ i18nService.translate('auth.login.description') || 'Sign in to your account to continue' }}</p>
+    </div>
+
+    <!-- Mock Credentials Helper -->
+    <div class="mock-credentials">
+      <h4>{{ i18nService.translate('auth.login.mockCredentials') || 'Quick Login (Demo)' }}</h4>
+      <div class="mock-buttons">
+        <button type="button" class="btn btn-outline btn-sm" (click)="fillMockCredentials(UserRole.CUSTOMER)">
+          👤 {{ i18nService.translate('auth.login.loginAsCustomer') || 'Customer' }}
+        </button>
+        <button type="button" class="btn btn-outline btn-sm" (click)="fillMockCredentials(UserRole.ADMIN)">
+          👨‍💼 {{ i18nService.translate('auth.login.loginAsAdmin') || 'Admin' }}
+        </button>
+        <button type="button" class="btn btn-outline btn-sm" (click)="fillMockCredentials(UserRole.DELIVERY)">
+          🚚 {{ i18nService.translate('auth.login.loginAsDelivery') || 'Delivery' }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Login Form -->
+    <form class="auth-form" (ngSubmit)="onSubmit()" #loginFormRef="ngForm">
+      <!-- Email Field -->
+      <div class="form-group">
+        <label for="email">{{ i18nService.translate('auth.login.email') || 'Email Address' }}</label>
+        <div class="input-container">
+          <input
+            type="email"
+            id="email"
+            name="email"
+            [(ngModel)]="loginForm.email"
+            [placeholder]="i18nService.translate('auth.login.emailPlaceholder') || 'Enter your email'"
+            class="form-input"
+            required
+            #emailInput="ngModel">
+          <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+            <polyline points="22,6 12,13 2,6"></polyline>
+          </svg>
+        </div>
+        <div class="form-error" *ngIf="emailInput.invalid && emailInput.touched">
+          {{ i18nService.translate('auth.login.error.emailRequired') || 'Valid email is required' }}
+        </div>
+      </div>
+
+      <!-- Password Field -->
+      <div class="form-group">
+        <label for="password">{{ i18nService.translate('auth.login.password') || 'Password' }}</label>
+        <div class="input-container">
+          <input
+            [type]="showPassword ? 'text' : 'password'"
+            id="password"
+            name="password"
+            [(ngModel)]="loginForm.password"
+            [placeholder]="i18nService.translate('auth.login.passwordPlaceholder') || 'Enter your password'"
+            class="form-input"
+            required
+            #passwordInput="ngModel">
+          <button
+            type="button"
+            class="password-toggle"
+            (click)="togglePasswordVisibility()"
+            [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'">
+            <svg *ngIf="!showPassword" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+              <circle cx="12" cy="12" r="3"></circle>
+            </svg>
+            <svg *ngIf="showPassword" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+              <line x1="1" y1="1" x2="23" y2="23"></line>
+            </svg>
+          </button>
+        </div>
+        <div class="form-error" *ngIf="passwordInput.invalid && passwordInput.touched">
+          {{ i18nService.translate('auth.login.error.passwordRequired') || 'Password is required' }}
+        </div>
+      </div>
+
+      <!-- Remember Me & Forgot Password -->
+      <div class="form-options">
+        <label class="checkbox-label">
+          <input
+            type="checkbox"
+            name="rememberMe"
+            [(ngModel)]="loginForm.rememberMe"
+            class="checkbox-input">
+          <span class="checkbox-custom"></span>
+          {{ i18nService.translate('auth.login.rememberMe') || 'Remember me' }}
+        </label>
+        <button type="button" class="link-button" (click)="navigateToForgotPassword()">
+          {{ i18nService.translate('auth.login.forgotPassword') || 'Forgot password?' }}
+        </button>
+      </div>
+
+      <!-- Error Message -->
+      <div class="error-message" *ngIf="errorMessage">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="15" y1="9" x2="9" y2="15"></line>
+          <line x1="9" y1="9" x2="15" y2="15"></line>
+        </svg>
+        {{ errorMessage }}
+      </div>
+
+      <!-- Submit Button -->
+      <button
+        type="submit"
+        class="btn btn-primary btn-full"
+        [disabled]="isLoading || loginFormRef.invalid">
+        <span *ngIf="isLoading" class="loading-spinner"></span>
+        {{ isLoading ? (i18nService.translate('auth.login.submitting') || 'Signing in...') : (i18nService.translate('auth.login.submit') || 'Sign In') }}
+      </button>
+    </form>
+
+    <!-- Register Link -->
+    <div class="auth-footer">
+      <p>
+        {{ i18nService.translate('auth.login.noAccount') || "Don't have an account?" }}
+        <button type="button" class="link-button" (click)="navigateToRegister()">
+          {{ i18nService.translate('auth.login.signUp') || 'Sign up' }}
+        </button>
+      </p>
+    </div>
+  </div>
+</div>

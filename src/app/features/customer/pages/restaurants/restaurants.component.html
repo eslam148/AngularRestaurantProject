@@ -1,0 +1,245 @@
+<!-- Restaurants Page -->
+<div class="restaurants-page" [attr.dir]="isRTL() ? 'rtl' : 'ltr'">
+  <div class="container-fluid">
+    <div class="row">
+
+      <!-- Filters Sidebar -->
+      <div class="col-lg-3 col-md-4" [class.d-none]="!showFilters" [class.d-md-block]="true">
+        <div class="filters-sidebar">
+          <div class="filters-header">
+            <h5 class="mb-0">
+              <i class="bi bi-funnel me-2"></i>
+              {{ translate('restaurants.filters.title') || 'Filters' }}
+            </h5>
+            <button class="btn btn-sm btn-outline-secondary d-md-none" (click)="toggleFilters()">
+              <i class="bi bi-x"></i>
+            </button>
+          </div>
+
+          <div class="filters-content">
+            <!-- Search -->
+            <div class="filter-section">
+              <label class="form-label">{{ translate('common.search') || 'Search' }}</label>
+              <div class="input-group">
+                <span class="input-group-text">
+                  <i class="bi bi-search"></i>
+                </span>
+                <input type="text"
+                       class="form-control"
+                       [placeholder]="translate('restaurants.search.placeholder') || 'Search restaurants...'"
+                       [value]="searchQuery"
+                       (input)="onSearchChange($any($event.target).value || '')">
+              </div>
+            </div>
+
+            <!-- Cuisine Types -->
+            <div class="filter-section">
+              <label class="form-label">{{ translate('restaurant.cuisine') || 'Cuisine' }}</label>
+              <div class="cuisine-filters">
+                <div class="form-check" *ngFor="let cuisine of cuisineTypes">
+                  <input class="form-check-input"
+                         type="checkbox"
+                         [id]="'cuisine-' + cuisine"
+                         [checked]="isCuisineSelected(cuisine)"
+                         (change)="onCuisineToggle(cuisine)">
+                  <label class="form-check-label" [for]="'cuisine-' + cuisine">
+                    {{ getCuisineDisplayName(cuisine) }}
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Price Range -->
+            <div class="filter-section">
+              <label class="form-label">{{ translate('restaurant.priceRange') || 'Price Range' }}</label>
+              <div class="price-filters">
+                <div class="form-check" *ngFor="let priceRange of priceRanges">
+                  <input class="form-check-input"
+                         type="checkbox"
+                         [id]="'price-' + priceRange"
+                         [checked]="isPriceRangeSelected(priceRange)"
+                         (change)="onPriceRangeToggle(priceRange)">
+                  <label class="form-check-label" [for]="'price-' + priceRange">
+                    {{ priceRange }}
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Rating -->
+            <div class="filter-section">
+              <label class="form-label">{{ translate('restaurant.rating') || 'Minimum Rating' }}</label>
+              <select class="form-select" [(ngModel)]="minRating" (change)="onRatingChange()">
+                <option [value]="0">{{ translate('common.any') || 'Any' }}</option>
+                <option *ngFor="let rating of ratingOptions.slice(1)" [value]="rating">
+                  {{ rating }}+ <i class="bi bi-star-fill"></i>
+                </option>
+              </select>
+            </div>
+
+            <!-- Open Now -->
+            <div class="filter-section">
+              <div class="form-check form-switch">
+                <input class="form-check-input"
+                       type="checkbox"
+                       id="openNow"
+                       [checked]="showOpenOnly"
+                       (change)="onOpenOnlyToggle()">
+                <label class="form-check-label" for="openNow">
+                  {{ translate('restaurant.openNow') || 'Open Now' }}
+                </label>
+              </div>
+            </div>
+
+            <!-- Clear Filters -->
+            <div class="filter-section" *ngIf="getActiveFiltersCount() > 0">
+              <button class="btn btn-outline-secondary w-100" (click)="clearFilters()">
+                <i class="bi bi-arrow-clockwise me-2"></i>
+                {{ translate('restaurants.filters.clear') || 'Clear Filters' }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Content -->
+      <div class="col-lg-9 col-md-8">
+        <div class="restaurants-content">
+
+          <!-- Header -->
+          <div class="content-header">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+              <div>
+                <h2 class="page-title">
+                  {{ translate('nav.restaurants') || 'Restaurants' }}
+                </h2>
+                <p class="text-muted mb-0">
+                  {{ filteredRestaurants.length }}
+                  {{ translate('restaurants.results') || 'restaurants found' }}
+                </p>
+              </div>
+
+              <!-- Mobile Filter Toggle -->
+              <button class="btn btn-outline-primary d-md-none" (click)="toggleFilters()">
+                <i class="bi bi-funnel me-2"></i>
+                {{ translate('restaurants.filters.title') || 'Filters' }}
+                <span class="badge bg-primary ms-2" *ngIf="getActiveFiltersCount() > 0">
+                  {{ getActiveFiltersCount() }}
+                </span>
+              </button>
+            </div>
+
+            <!-- Sort Options -->
+            <div class="sort-options">
+              <div class="row align-items-center">
+                <div class="col-md-6">
+                  <div class="d-flex align-items-center">
+                    <label class="form-label me-3 mb-0">
+                      {{ translate('common.sort') || 'Sort by:' }}
+                    </label>
+                    <select class="form-select form-select-sm"
+                            style="width: auto;"
+                            [(ngModel)]="sortBy"
+                            (change)="onSortChange()">
+                      <option value="rating">{{ translate('restaurant.rating') || 'Rating' }}</option>
+                      <option value="deliveryTime">{{ translate('restaurant.deliveryTime') || 'Delivery Time' }}</option>
+                      <option value="name">{{ translate('common.name') || 'Name' }}</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Loading State -->
+          <div class="loading-container" *ngIf="loading">
+            <div class="text-center py-5">
+              <div class="spinner-border spinner-restaurant" role="status">
+                <span class="visually-hidden">{{ translate('common.loading') || 'Loading...' }}</span>
+              </div>
+              <p class="mt-3 text-muted">{{ translate('restaurants.loading') || 'Loading restaurants...' }}</p>
+            </div>
+          </div>
+
+          <!-- Restaurant Grid -->
+          <div class="restaurants-grid" *ngIf="!loading">
+            <div class="row g-4">
+              <div class="col-lg-6 col-xl-4" *ngFor="let restaurant of filteredRestaurants; trackBy: trackByRestaurant">
+                <div class="restaurant-card card h-100" [routerLink]="['/customer/restaurant', restaurant.id]">
+
+                  <!-- Restaurant Image -->
+                  <div class="card-img-wrapper">
+                    <img [src]="restaurant.coverImage"
+                         [alt]="restaurant.name"
+                         class="card-img-top"
+                         loading="lazy">
+
+                    <!-- Status Badge -->
+                    <div class="restaurant-status" [class.open]="restaurant.isOpen" [class.closed]="!restaurant.isOpen">
+                      {{ restaurant.isOpen ? (translate('restaurant.openNow') || 'Open') : (translate('restaurant.closed') || 'Closed') }}
+                    </div>
+
+                    <!-- Rating Badge -->
+                    <div class="restaurant-rating">
+                      <i class="bi bi-star-fill text-warning"></i>
+                      <span>{{ restaurant.rating }}</span>
+                      <small>({{ restaurant.reviewCount }})</small>
+                    </div>
+                  </div>
+
+                  <!-- Restaurant Info -->
+                  <div class="card-body">
+                    <h5 class="card-title">{{ restaurant.name }}</h5>
+                    <p class="card-text text-muted">{{ restaurant.description }}</p>
+
+                    <!-- Cuisine Tags -->
+                    <div class="cuisine-tags mb-3">
+                      <span class="badge bg-light text-dark me-1" *ngFor="let cuisine of restaurant.cuisine.slice(0, 2)">
+                        {{ getCuisineDisplayName(cuisine) }}
+                      </span>
+                      <span class="badge bg-light text-dark" *ngIf="restaurant.cuisine.length > 2">
+                        +{{ restaurant.cuisine.length - 2 }}
+                      </span>
+                    </div>
+
+                    <!-- Restaurant Details -->
+                    <div class="restaurant-details">
+                      <div class="detail-item">
+                        <i class="bi bi-clock me-2"></i>
+                        <span>{{ restaurant.deliveryTime }}</span>
+                      </div>
+                      <div class="detail-item">
+                        <i class="bi bi-truck me-2"></i>
+                        <span>${{ restaurant.deliveryFee }}</span>
+                      </div>
+                      <div class="detail-item">
+                        <i class="bi bi-cash me-2"></i>
+                        <span>{{ restaurant.priceRange }}</span>
+                      </div>
+                      <div class="detail-item">
+                        <i class="bi bi-bag me-2"></i>
+                        <span>Min ${{ restaurant.minimumOrder }}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- No Results -->
+            <div class="no-results text-center py-5" *ngIf="filteredRestaurants.length === 0 && !loading">
+              <i class="bi bi-search display-1 text-muted mb-3"></i>
+              <h4>{{ translate('restaurants.noResults.title') || 'No restaurants found' }}</h4>
+              <p class="text-muted">
+                {{ translate('restaurants.noResults.message') || 'Try adjusting your filters or search terms' }}
+              </p>
+              <button class="btn btn-primary" (click)="clearFilters()">
+                {{ translate('restaurants.filters.clear') || 'Clear Filters' }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

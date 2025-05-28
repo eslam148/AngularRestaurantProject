@@ -1,0 +1,51 @@
+.delivery-layout {
+  display: grid;
+  grid-template-areas: 
+    "header"
+    "main"
+    "bottom-nav";
+  grid-template-rows: 64px 1fr 80px;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.delivery-header {
+  grid-area: header;
+  z-index: 1000;
+  border-bottom: 1px solid var(--border-color);
+  background: var(--surface-color);
+}
+
+.delivery-main {
+  grid-area: main;
+  overflow: auto;
+  background: var(--background-color);
+}
+
+.delivery-content {
+  padding: 16px;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.delivery-bottom-nav {
+  grid-area: bottom-nav;
+  z-index: 999;
+  border-top: 1px solid var(--border-color);
+  background: var(--surface-color);
+}
+
+/* Mobile-first design */
+@media (min-width: 768px) {
+  .delivery-content {
+    padding: 24px;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .delivery-header,
+  .delivery-bottom-nav {
+    border-color: var(--border-color-dark);
+  }
+}

@@ -1,0 +1,78 @@
+.admin-layout {
+  display: grid;
+  grid-template-areas: 
+    "sidebar header"
+    "sidebar main";
+  grid-template-columns: 280px 1fr;
+  grid-template-rows: 64px 1fr;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.admin-layout.sidebar-collapsed {
+  grid-template-columns: 64px 1fr;
+}
+
+.admin-header {
+  grid-area: header;
+  z-index: 1000;
+  border-bottom: 1px solid var(--border-color);
+  background: var(--surface-color);
+}
+
+.admin-sidebar {
+  grid-area: sidebar;
+  z-index: 999;
+  border-right: 1px solid var(--border-color);
+  background: var(--surface-color);
+}
+
+.admin-main {
+  grid-area: main;
+  overflow: auto;
+  background: var(--background-color);
+}
+
+.admin-content {
+  padding: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .admin-layout {
+    grid-template-areas: 
+      "header"
+      "main";
+    grid-template-columns: 1fr;
+    grid-template-rows: 64px 1fr;
+  }
+
+  .admin-sidebar {
+    position: fixed;
+    top: 64px;
+    left: 0;
+    height: calc(100vh - 64px);
+    width: 280px;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    z-index: 1001;
+  }
+
+  .admin-layout:not(.sidebar-collapsed) .admin-sidebar {
+    transform: translateX(0);
+  }
+
+  .admin-content {
+    padding: 16px;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .admin-header,
+  .admin-sidebar {
+    border-color: var(--border-color-dark);
+  }
+}

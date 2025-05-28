@@ -1,0 +1,92 @@
+<!-- Admin Restaurants Page -->
+<div class="admin-restaurants" [attr.dir]="i18nService.isRTL() ? 'rtl' : 'ltr'">
+  <div class="page-header">
+    <h1>{{ i18nService.translate('admin.nav.restaurants') }}</h1>
+    <p>{{ i18nService.translate('admin.restaurants.description') }}</p>
+
+    <div class="header-actions">
+      <button class="btn btn-primary" (click)="addNewRestaurant()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="12" y1="5" x2="12" y2="19"></line>
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+        {{ i18nService.translate('admin.restaurants.addNew') || 'Add Restaurant' }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="filters-section">
+    <div class="search-box">
+      <input
+        type="text"
+        [(ngModel)]="searchTerm"
+        (input)="onSearchChange()"
+        [placeholder]="i18nService.translate('admin.restaurants.searchPlaceholder') || 'Search restaurants...'"
+        class="search-input">
+    </div>
+
+    <div class="filter-dropdown">
+      <select [(ngModel)]="selectedStatus" (change)="onStatusChange()" class="status-filter">
+        <option value="all">{{ i18nService.translate('admin.restaurants.filter.all') || 'All Status' }}</option>
+        <option value="open">{{ i18nService.translate('admin.restaurants.filter.open') || 'Open' }}</option>
+        <option value="closed">{{ i18nService.translate('admin.restaurants.filter.closed') || 'Closed' }}</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Restaurants Grid -->
+  <div class="restaurants-grid">
+    <div class="restaurant-card" *ngFor="let restaurant of filteredRestaurants">
+      <div class="restaurant-image">
+        <img [src]="restaurant.coverImage" [alt]="restaurant.name" />
+        <div class="status-badge" [ngClass]="getStatusClass(restaurant.isOpen)">
+          {{ getStatusText(restaurant.isOpen) }}
+        </div>
+      </div>
+
+      <div class="restaurant-info">
+        <h3 class="restaurant-name">{{ restaurant.name }}</h3>
+        <p class="restaurant-description">{{ restaurant.description }}</p>
+
+        <div class="restaurant-meta">
+          <div class="rating">
+            <span class="stars">{{ getRatingStars(restaurant.rating) }}</span>
+            <span class="rating-text">{{ restaurant.rating }} ({{ restaurant.reviewCount }} reviews)</span>
+          </div>
+
+          <div class="delivery-info">
+            <span class="delivery-time">{{ restaurant.deliveryTime }}</span>
+            <span class="delivery-fee">${{ restaurant.deliveryFee }}</span>
+          </div>
+        </div>
+
+        <div class="restaurant-tags">
+          <span class="tag" *ngFor="let tag of restaurant.tags">{{ tag }}</span>
+        </div>
+      </div>
+
+      <div class="restaurant-actions">
+        <button class="btn btn-sm btn-outline" (click)="editRestaurant(restaurant)">
+          {{ i18nService.translate('common.edit') || 'Edit' }}
+        </button>
+        <button
+          class="btn btn-sm"
+          [ngClass]="restaurant.isOpen ? 'btn-warning' : 'btn-success'"
+          (click)="toggleRestaurantStatus(restaurant)">
+          {{ restaurant.isOpen ? (i18nService.translate('admin.restaurants.close') || 'Close') : (i18nService.translate('admin.restaurants.open') || 'Open') }}
+        </button>
+        <button class="btn btn-sm btn-danger" (click)="deleteRestaurant(restaurant)">
+          {{ i18nService.translate('common.delete') || 'Delete' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div class="empty-state" *ngIf="filteredRestaurants.length === 0">
+    <div class="empty-icon">🏪</div>
+    <h3>{{ i18nService.translate('admin.restaurants.noResults') || 'No restaurants found' }}</h3>
+    <p>{{ i18nService.translate('admin.restaurants.noResultsDesc') || 'Try adjusting your search or filters' }}</p>
+  </div>
+</div>

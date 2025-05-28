@@ -1,0 +1,20 @@
+<div class="admin-layout" [class.sidebar-collapsed]="sidebarCollapsed">
+  <!-- Admin Header -->
+  <app-admin-header 
+    (sidebarToggle)="onSidebarToggle($event)"
+    class="admin-header">
+  </app-admin-header>
+
+  <!-- Admin Sidebar -->
+  <app-admin-sidebar 
+    [collapsed]="sidebarCollapsed"
+    class="admin-sidebar">
+  </app-admin-sidebar>
+
+  <!-- Main Content Area -->
+  <main class="admin-main" [class.sidebar-collapsed]="sidebarCollapsed">
+    <div class="admin-content">
+      <router-outlet></router-outlet>
+    </div>
+  </main>
+</div>

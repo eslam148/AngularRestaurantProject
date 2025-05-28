@@ -1,0 +1,233 @@
+<!-- Register Page -->
+<div class="auth-page" [attr.dir]="i18nService.isRTL() ? 'rtl' : 'ltr'">
+  <div class="auth-container">
+    <!-- Header -->
+    <div class="auth-header">
+      <h1>{{ i18nService.translate('auth.register.title') || 'Create Account' }}</h1>
+      <p>{{ i18nService.translate('auth.register.description') || 'Join us today and start ordering from your favorite restaurants' }}</p>
+    </div>
+
+    <!-- Register Form -->
+    <form class="auth-form" (ngSubmit)="onSubmit()" #registerFormRef="ngForm">
+      <!-- First Name Field -->
+      <div class="form-group">
+        <label for="firstName">{{ i18nService.translate('auth.register.firstName') || 'First Name' }}</label>
+        <div class="input-container">
+          <input
+            type="text"
+            id="firstName"
+            name="firstName"
+            [(ngModel)]="registerForm.firstName"
+            [placeholder]="i18nService.translate('auth.register.firstNamePlaceholder') || 'Enter your first name'"
+            class="form-input"
+            required
+            #firstNameInput="ngModel">
+          <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+        </div>
+        <div class="form-error" *ngIf="firstNameInput.invalid && firstNameInput.touched">
+          {{ i18nService.translate('form.required') || 'This field is required' }}
+        </div>
+      </div>
+
+      <!-- Last Name Field -->
+      <div class="form-group">
+        <label for="lastName">{{ i18nService.translate('auth.register.lastName') || 'Last Name' }}</label>
+        <div class="input-container">
+          <input
+            type="text"
+            id="lastName"
+            name="lastName"
+            [(ngModel)]="registerForm.lastName"
+            [placeholder]="i18nService.translate('auth.register.lastNamePlaceholder') || 'Enter your last name'"
+            class="form-input"
+            required
+            #lastNameInput="ngModel">
+          <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+        </div>
+        <div class="form-error" *ngIf="lastNameInput.invalid && lastNameInput.touched">
+          {{ i18nService.translate('form.required') || 'This field is required' }}
+        </div>
+      </div>
+
+      <!-- Email Field -->
+      <div class="form-group">
+        <label for="email">{{ i18nService.translate('auth.register.email') || 'Email Address' }}</label>
+        <div class="input-container">
+          <input
+            type="email"
+            id="email"
+            name="email"
+            [(ngModel)]="registerForm.email"
+            [placeholder]="i18nService.translate('auth.register.emailPlaceholder') || 'Enter your email'"
+            class="form-input"
+            required
+            email
+            #emailInput="ngModel">
+          <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+            <polyline points="22,6 12,13 2,6"></polyline>
+          </svg>
+        </div>
+        <div class="form-error" *ngIf="emailInput.invalid && emailInput.touched">
+          <span *ngIf="emailInput.errors?.['required']">{{ i18nService.translate('form.required') || 'This field is required' }}</span>
+          <span *ngIf="emailInput.errors?.['email']">{{ i18nService.translate('form.email.invalid') || 'Please enter a valid email address' }}</span>
+        </div>
+      </div>
+
+      <!-- Phone Field -->
+      <div class="form-group">
+        <label for="phone">{{ i18nService.translate('auth.register.phone') || 'Phone Number' }}</label>
+        <div class="input-container">
+          <input
+            type="tel"
+            id="phone"
+            name="phone"
+            [(ngModel)]="registerForm.phone"
+            [placeholder]="i18nService.translate('auth.register.phonePlaceholder') || 'Enter your phone number'"
+            class="form-input"
+            required
+            #phoneInput="ngModel">
+          <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+          </svg>
+        </div>
+        <div class="form-error" *ngIf="phoneInput.invalid && phoneInput.touched">
+          {{ i18nService.translate('form.required') || 'This field is required' }}
+        </div>
+      </div>
+
+      <!-- Password Field -->
+      <div class="form-group">
+        <label for="password">{{ i18nService.translate('auth.register.password') || 'Password' }}</label>
+        <div class="input-container">
+          <input
+            [type]="showPassword ? 'text' : 'password'"
+            id="password"
+            name="password"
+            [(ngModel)]="registerForm.password"
+            [placeholder]="i18nService.translate('auth.register.passwordPlaceholder') || 'Create a password'"
+            class="form-input"
+            required
+            minlength="8"
+            #passwordInput="ngModel">
+          <button
+            type="button"
+            class="password-toggle"
+            (click)="togglePasswordVisibility()"
+            [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'">
+            <svg *ngIf="!showPassword" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+              <circle cx="12" cy="12" r="3"></circle>
+            </svg>
+            <svg *ngIf="showPassword" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+              <line x1="1" y1="1" x2="23" y2="23"></line>
+            </svg>
+          </button>
+        </div>
+        <div class="form-error" *ngIf="passwordInput.invalid && passwordInput.touched">
+          <span *ngIf="passwordInput.errors?.['required']">{{ i18nService.translate('form.required') || 'This field is required' }}</span>
+          <span *ngIf="passwordInput.errors?.['minlength']">{{ i18nService.translate('form.password.minLength') || 'Password must be at least 8 characters' }}</span>
+        </div>
+      </div>
+
+      <!-- Confirm Password Field -->
+      <div class="form-group">
+        <label for="confirmPassword">{{ i18nService.translate('auth.register.confirmPassword') || 'Confirm Password' }}</label>
+        <div class="input-container">
+          <input
+            [type]="showConfirmPassword ? 'text' : 'password'"
+            id="confirmPassword"
+            name="confirmPassword"
+            [(ngModel)]="registerForm.confirmPassword"
+            [placeholder]="i18nService.translate('auth.register.confirmPasswordPlaceholder') || 'Confirm your password'"
+            class="form-input"
+            required
+            #confirmPasswordInput="ngModel">
+          <button
+            type="button"
+            class="password-toggle"
+            (click)="toggleConfirmPasswordVisibility()"
+            [attr.aria-label]="showConfirmPassword ? 'Hide password' : 'Show password'">
+            <svg *ngIf="!showConfirmPassword" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+              <circle cx="12" cy="12" r="3"></circle>
+            </svg>
+            <svg *ngIf="showConfirmPassword" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+              <line x1="1" y1="1" x2="23" y2="23"></line>
+            </svg>
+          </button>
+        </div>
+        <div class="form-error" *ngIf="confirmPasswordInput.invalid && confirmPasswordInput.touched">
+          {{ i18nService.translate('form.required') || 'This field is required' }}
+        </div>
+        <div class="form-error" *ngIf="registerForm.password && registerForm.confirmPassword && registerForm.password !== registerForm.confirmPassword">
+          {{ i18nService.translate('auth.register.error.passwordMismatch') || 'Passwords do not match' }}
+        </div>
+      </div>
+
+      <!-- Terms and Conditions -->
+      <div class="form-group">
+        <label class="checkbox-label">
+          <input
+            type="checkbox"
+            name="agreeToTerms"
+            [(ngModel)]="registerForm.agreeToTerms"
+            class="checkbox-input"
+            required
+            #termsInput="ngModel">
+          <span class="checkbox-custom"></span>
+          {{ i18nService.translate('auth.register.terms') || 'I agree to the Terms and Conditions' }}
+        </label>
+        <div class="form-error" *ngIf="termsInput.invalid && termsInput.touched">
+          {{ i18nService.translate('auth.register.error.termsRequired') || 'You must agree to the Terms and Conditions' }}
+        </div>
+      </div>
+
+      <!-- Error Message -->
+      <div class="error-message" *ngIf="errorMessage">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="15" y1="9" x2="9" y2="15"></line>
+          <line x1="9" y1="9" x2="15" y2="15"></line>
+        </svg>
+        {{ errorMessage }}
+      </div>
+
+      <!-- Success Message -->
+      <div class="success-message" *ngIf="successMessage">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+          <polyline points="22,4 12,14.01 9,11.01"></polyline>
+        </svg>
+        {{ successMessage }}
+      </div>
+
+      <!-- Submit Button -->
+      <button
+        type="submit"
+        class="btn btn-primary btn-full"
+        [disabled]="isLoading || registerFormRef.invalid || !passwordsMatch()">
+        <span *ngIf="isLoading" class="loading-spinner"></span>
+        {{ isLoading ? (i18nService.translate('auth.register.submitting') || 'Creating account...') : (i18nService.translate('auth.register.submit') || 'Create Account') }}
+      </button>
+    </form>
+
+    <!-- Login Link -->
+    <div class="auth-footer">
+      <p>
+        {{ i18nService.translate('auth.register.hasAccount') || 'Already have an account?' }}
+        <button type="button" class="link-button" (click)="navigateToLogin()">
+          {{ i18nService.translate('auth.register.login') || 'Sign in' }}
+        </button>
+      </p>
+    </div>
+  </div>
+</div>

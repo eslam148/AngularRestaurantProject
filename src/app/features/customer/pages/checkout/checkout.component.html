@@ -1,0 +1,351 @@
+<!-- Checkout Page -->
+<div class="checkout-page" [attr.dir]="isRTL() ? 'rtl' : 'ltr'">
+  <div class="container">
+
+    <!-- Page Header -->
+    <div class="checkout-header">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item">
+            <a [routerLink]="['/customer']">{{ translate('nav.home') || 'Home' }}</a>
+          </li>
+          <li class="breadcrumb-item">
+            <a [routerLink]="['/customer/restaurants']">{{ translate('nav.restaurants') || 'Restaurants' }}</a>
+          </li>
+          <li class="breadcrumb-item active" aria-current="page">
+            {{ translate('checkout.title') || 'Checkout' }}
+          </li>
+        </ol>
+      </nav>
+
+      <h1 class="page-title">{{ translate('checkout.title') || 'Checkout' }}</h1>
+    </div>
+
+    <div class="row">
+
+      <!-- Checkout Steps -->
+      <div class="col-lg-8">
+        <div class="checkout-steps">
+
+          <!-- Step Progress Indicator -->
+          <div class="steps-indicator">
+            <div class="step"
+                 *ngFor="let step of steps; let i = index"
+                 [class.completed]="step.isCompleted"
+                 [class.active]="step.isActive"
+                 (click)="step.isCompleted ? goToStep(i) : null">
+              <div class="step-number">
+                <i class="bi bi-check" *ngIf="step.isCompleted"></i>
+                <span *ngIf="!step.isCompleted">{{ i + 1 }}</span>
+              </div>
+              <div class="step-title">{{ step.title }}</div>
+            </div>
+          </div>
+
+          <!-- Step Content -->
+          <div class="step-content">
+
+            <!-- Step 1: Delivery Address -->
+            <div class="step-panel" *ngIf="currentStep === 0">
+              <h3 class="step-panel-title">
+                <i class="bi bi-geo-alt me-2"></i>
+                {{ translate('checkout.address.title') || 'Delivery Address' }}
+              </h3>
+
+              <!-- Saved Addresses -->
+              <div class="address-selection" *ngIf="availableAddresses.length > 0">
+                <h5>{{ translate('checkout.address.saved') || 'Saved Addresses' }}</h5>
+                <div class="address-options">
+                  <div class="address-option"
+                       *ngFor="let address of availableAddresses"
+                       [class.selected]="selectedAddressId === address.id"
+                       (click)="selectedAddressId = address.id; onAddressSelectionChange()">
+                    <div class="form-check">
+                      <input class="form-check-input"
+                             type="radio"
+                             [id]="'address-' + address.id"
+                             name="selectedAddress"
+                             [value]="address.id"
+                             [(ngModel)]="selectedAddressId"
+                             (change)="onAddressSelectionChange()">
+                      <label class="form-check-label" [for]="'address-' + address.id">
+                        <div class="address-info">
+                          <div class="address-label">
+                            <strong>{{ address.label }}</strong>
+                            <span class="badge bg-primary ms-2" *ngIf="address.isDefault">{{ translate('common.default') || 'Default' }}</span>
+                          </div>
+                          <div class="address-details">
+                            {{ address.street }}<br>
+                            {{ address.city }}, {{ address.state }} {{ address.zipCode }}
+                          </div>
+                        </div>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Custom Address Option -->
+              <div class="custom-address-section">
+                <div class="form-check">
+                  <input class="form-check-input"
+                         type="checkbox"
+                         id="useCustomAddress"
+                         [(ngModel)]="useCustomAddress"
+                         (change)="onUseCustomAddressChange()">
+                  <label class="form-check-label" for="useCustomAddress">
+                    {{ translate('checkout.address.useCustom') || 'Use a different address' }}
+                  </label>
+                </div>
+
+                <!-- Custom Address Form -->
+                <div class="custom-address-form" *ngIf="useCustomAddress">
+                  <div class="row">
+                    <div class="col-12 mb-3">
+                      <label class="form-label">{{ translate('checkout.address.street') || 'Street Address' }}</label>
+                      <input type="text"
+                             class="form-control"
+                             [(ngModel)]="customAddress.street"
+                             [placeholder]="translate('checkout.address.streetPlaceholder') || 'Enter your street address'">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                      <label class="form-label">{{ translate('checkout.address.city') || 'City' }}</label>
+                      <input type="text"
+                             class="form-control"
+                             [(ngModel)]="customAddress.city"
+                             [placeholder]="translate('checkout.address.cityPlaceholder') || 'Enter city'">
+                    </div>
+                    <div class="col-md-3 mb-3">
+                      <label class="form-label">{{ translate('checkout.address.state') || 'State' }}</label>
+                      <input type="text"
+                             class="form-control"
+                             [(ngModel)]="customAddress.state"
+                             [placeholder]="translate('checkout.address.statePlaceholder') || 'State'">
+                    </div>
+                    <div class="col-md-3 mb-3">
+                      <label class="form-label">{{ translate('checkout.address.zipCode') || 'ZIP Code' }}</label>
+                      <input type="text"
+                             class="form-control"
+                             [(ngModel)]="customAddress.zipCode"
+                             [placeholder]="translate('checkout.address.zipPlaceholder') || 'ZIP'">
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Delivery Instructions -->
+              <div class="delivery-instructions">
+                <label class="form-label">
+                  {{ translate('checkout.address.instructions') || 'Delivery Instructions' }}
+                  <small class="text-muted">({{ translate('common.optional') || 'Optional' }})</small>
+                </label>
+                <textarea class="form-control"
+                          rows="3"
+                          [(ngModel)]="deliveryInstructions"
+                          [placeholder]="translate('checkout.address.instructionsPlaceholder') || 'e.g., Ring doorbell, Leave at door, etc.'">
+                </textarea>
+              </div>
+            </div>
+
+            <!-- Step 2: Payment Method -->
+            <div class="step-panel" *ngIf="currentStep === 1">
+              <h3 class="step-panel-title">
+                <i class="bi bi-credit-card me-2"></i>
+                {{ translate('checkout.payment.title') || 'Payment Method' }}
+              </h3>
+
+              <div class="payment-methods">
+                <div class="payment-option"
+                     *ngFor="let method of paymentMethods"
+                     [class.selected]="selectedPaymentMethod === method.id"
+                     (click)="selectPaymentMethod(method.id)">
+                  <div class="form-check">
+                    <input class="form-check-input"
+                           type="radio"
+                           [id]="'payment-' + method.id"
+                           name="paymentMethod"
+                           [value]="method.id"
+                           [(ngModel)]="selectedPaymentMethod">
+                    <label class="form-check-label" [for]="'payment-' + method.id">
+                      <div class="payment-info">
+                        <div class="payment-header">
+                          <i class="bi" [class]="method.icon"></i>
+                          <strong>{{ method.name }}</strong>
+                        </div>
+                        <div class="payment-description">
+                          {{ method.description }}
+                        </div>
+                      </div>
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 3: Review Order -->
+            <div class="step-panel" *ngIf="currentStep === 2">
+              <h3 class="step-panel-title">
+                <i class="bi bi-clipboard-check me-2"></i>
+                {{ translate('checkout.review.title') || 'Review Your Order' }}
+              </h3>
+
+              <!-- Order Summary -->
+              <div class="order-review">
+
+                <!-- Delivery Details -->
+                <div class="review-section">
+                  <h5>{{ translate('checkout.review.delivery') || 'Delivery Details' }}</h5>
+                  <div class="review-item">
+                    <div class="review-label">{{ translate('checkout.address.title') || 'Address' }}:</div>
+                    <div class="review-value">
+                      <div *ngIf="checkoutData?.deliveryAddress as deliveryAddress">
+                        {{ deliveryAddress.street }}<br>
+                        {{ deliveryAddress.city }}, {{ deliveryAddress.state }} {{ deliveryAddress.zipCode }}
+                      </div>
+                    </div>
+                  </div>
+                  <div class="review-item" *ngIf="checkoutData?.deliveryInstructions as instructions">
+                    <div class="review-label">{{ translate('checkout.address.instructions') || 'Instructions' }}:</div>
+                    <div class="review-value">{{ instructions }}</div>
+                  </div>
+                  <div class="review-item">
+                    <div class="review-label">{{ translate('checkout.review.estimatedTime') || 'Estimated Delivery' }}:</div>
+                    <div class="review-value">{{ getEstimatedDeliveryTime() }}</div>
+                  </div>
+                </div>
+
+                <!-- Payment Details -->
+                <div class="review-section">
+                  <h5>{{ translate('checkout.review.payment') || 'Payment Method' }}</h5>
+                  <div class="review-item">
+                    <div class="review-value">
+                      <div class="payment-method-display" *ngIf="getSelectedPaymentMethodInfo() as paymentInfo">
+                        <i class="bi" [class]="paymentInfo.icon"></i>
+                        {{ paymentInfo.name }}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Order Items -->
+                <div class="review-section">
+                  <h5>{{ translate('checkout.review.items') || 'Order Items' }}</h5>
+                  <div class="order-items-review">
+                    <div class="order-item" *ngFor="let item of cartItems; trackBy: trackByCartItem">
+                      <div class="item-image">
+                        <img [src]="item.menuItem.image" [alt]="item.menuItem.name" loading="lazy">
+                      </div>
+                      <div class="item-details">
+                        <h6 class="item-name">{{ item.menuItem.name }}</h6>
+                        <div class="item-customizations" *ngIf="getCustomizationSummary(item)">
+                          <small class="text-muted">{{ getCustomizationSummary(item) }}</small>
+                        </div>
+                        <div class="item-instructions" *ngIf="item.specialInstructions">
+                          <small class="text-muted">
+                            <i class="bi bi-chat-left-text me-1"></i>
+                            {{ item.specialInstructions }}
+                          </small>
+                        </div>
+                        <div class="item-quantity-price">
+                          <span class="quantity">{{ translate('common.qty') || 'Qty' }}: {{ item.quantity }}</span>
+                          <span class="price">${{ formatPrice(item.totalPrice) }}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 4: Order Confirmation -->
+            <div class="step-panel" *ngIf="currentStep === 3">
+              <div class="order-confirmation">
+                <div class="confirmation-icon">
+                  <i class="bi bi-check-circle-fill text-success"></i>
+                </div>
+                <h3>{{ translate('checkout.confirmation.title') || 'Order Placed Successfully!' }}</h3>
+                <p class="confirmation-message">
+                  {{ translate('checkout.confirmation.message') || 'Thank you for your order. You will receive a confirmation email shortly.' }}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step Navigation -->
+          <div class="step-navigation" *ngIf="currentStep < 3">
+            <button type="button"
+                    class="btn btn-outline-secondary"
+                    (click)="previousStep()"
+                    [disabled]="currentStep === 0">
+              <i class="bi bi-arrow-left me-2"></i>
+              {{ translate('common.previous') || 'Previous' }}
+            </button>
+
+            <button type="button"
+                    class="btn btn-primary"
+                    (click)="currentStep === 2 ? placeOrder() : nextStep()"
+                    [disabled]="!canProceedToNextStep() || placingOrder">
+              <span *ngIf="placingOrder" class="spinner-border spinner-border-sm me-2" role="status"></span>
+              <span *ngIf="currentStep === 2">
+                {{ placingOrder ? (translate('checkout.placingOrder') || 'Placing Order...') : (translate('checkout.placeOrder') || 'Place Order') }}
+              </span>
+              <span *ngIf="currentStep < 2">
+                {{ translate('common.next') || 'Next' }}
+                <i class="bi bi-arrow-right ms-2"></i>
+              </span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Order Summary Sidebar -->
+      <div class="col-lg-4">
+        <div class="order-summary-sidebar" *ngIf="cart">
+          <h4 class="sidebar-title">{{ translate('checkout.orderSummary') || 'Order Summary' }}</h4>
+
+          <!-- Cart Items Summary -->
+          <div class="cart-items-summary">
+            <div class="cart-item-summary" *ngFor="let item of cartItems; trackBy: trackByCartItem">
+              <div class="item-info">
+                <span class="item-name">{{ item.menuItem.name }}</span>
+                <span class="item-quantity">x{{ item.quantity }}</span>
+              </div>
+              <span class="item-price">${{ formatPrice(item.totalPrice) }}</span>
+            </div>
+          </div>
+
+          <!-- Price Breakdown -->
+          <div class="price-breakdown">
+            <div class="price-row">
+              <span class="price-label">{{ translate('cart.subtotal') || 'Subtotal' }}</span>
+              <span class="price-value">${{ formatPrice(cart.subtotal) }}</span>
+            </div>
+            <div class="price-row">
+              <span class="price-label">{{ translate('cart.tax') || 'Tax' }}</span>
+              <span class="price-value">${{ formatPrice(cart.tax) }}</span>
+            </div>
+            <div class="price-row">
+              <span class="price-label">{{ translate('cart.deliveryFee') || 'Delivery Fee' }}</span>
+              <span class="price-value" [class.free-delivery]="cart.deliveryFee === 0">
+                {{ cart.deliveryFee === 0 ? (translate('cart.freeDelivery') || 'Free') : '$' + formatPrice(cart.deliveryFee) }}
+              </span>
+            </div>
+            <hr class="price-divider">
+            <div class="price-row total-row">
+              <span class="price-label">{{ translate('cart.total') || 'Total' }}</span>
+              <span class="price-value total-price">${{ formatPrice(cart.total) }}</span>
+            </div>
+          </div>
+
+          <!-- Estimated Delivery Time -->
+          <div class="delivery-time-info" *ngIf="checkoutData?.estimatedDeliveryTime">
+            <div class="delivery-time">
+              <i class="bi bi-clock me-2"></i>
+              <span>{{ translate('checkout.estimatedDelivery') || 'Estimated delivery' }}: {{ getEstimatedDeliveryTime() }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,301 @@
+<!-- Restaurant Detail Page -->
+<div class="restaurant-detail-page" [attr.dir]="isRTL() ? 'rtl' : 'ltr'" *ngIf="restaurant">
+
+  <!-- Loading State -->
+  <div class="loading-container" *ngIf="loading">
+    <div class="text-center py-5">
+      <div class="spinner-border spinner-restaurant" role="status">
+        <span class="visually-hidden">{{ translate('common.loading') || 'Loading...' }}</span>
+      </div>
+      <p class="mt-3 text-muted">{{ translate('restaurant.loading') || 'Loading restaurant...' }}</p>
+    </div>
+  </div>
+
+  <!-- Restaurant Header -->
+  <div class="restaurant-header" *ngIf="!loading">
+    <div class="header-image">
+      <img [src]="restaurant.coverImage" [alt]="restaurant.name" class="cover-image">
+      <div class="header-overlay">
+        <div class="container">
+          <div class="row">
+            <div class="col-12">
+              <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                  <li class="breadcrumb-item">
+                    <a [routerLink]="['/customer']" class="text-white">
+                      {{ translate('nav.home') || 'Home' }}
+                    </a>
+                  </li>
+                  <li class="breadcrumb-item">
+                    <a [routerLink]="['/customer/restaurants']" class="text-white">
+                      {{ translate('nav.restaurants') || 'Restaurants' }}
+                    </a>
+                  </li>
+                  <li class="breadcrumb-item active text-white" aria-current="page">
+                    {{ restaurant.name }}
+                  </li>
+                </ol>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="restaurant-info">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8">
+            <div class="restaurant-details">
+              <div class="d-flex align-items-start">
+                <img [src]="restaurant.logo" [alt]="restaurant.name" class="restaurant-logo me-4">
+                <div class="flex-grow-1">
+                  <h1 class="restaurant-name">{{ restaurant.name }}</h1>
+                  <p class="restaurant-description">{{ restaurant.description }}</p>
+
+                  <!-- Restaurant Stats -->
+                  <div class="restaurant-stats">
+                    <div class="stat-item">
+                      <i class="bi bi-star-fill text-warning"></i>
+                      <span class="fw-bold">{{ restaurant.rating }}</span>
+                      <span class="text-muted">({{ restaurant.reviewCount }} reviews)</span>
+                    </div>
+                    <div class="stat-item">
+                      <i class="bi bi-clock"></i>
+                      <span>{{ restaurant.deliveryTime }}</span>
+                    </div>
+                    <div class="stat-item">
+                      <i class="bi bi-truck"></i>
+                      <span>${{ restaurant.deliveryFee }} delivery</span>
+                    </div>
+                    <div class="stat-item">
+                      <i class="bi bi-bag"></i>
+                      <span>Min ${{ restaurant.minimumOrder }}</span>
+                    </div>
+                  </div>
+
+                  <!-- Cuisine Tags -->
+                  <div class="cuisine-tags mt-3">
+                    <span class="badge bg-light text-dark me-2" *ngFor="let cuisine of restaurant.cuisine">
+                      {{ cuisine | titlecase }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-4">
+            <div class="restaurant-status-card">
+              <div class="status-badge" [class.open]="getOperatingStatus().isOpen" [class.closed]="!getOperatingStatus().isOpen">
+                <i class="bi" [class.bi-clock]="getOperatingStatus().isOpen" [class.bi-x-circle]="!getOperatingStatus().isOpen"></i>
+                {{ getOperatingStatus().message }}
+              </div>
+
+              <!-- Cart Button -->
+              <div class="cart-button-section mt-3" *ngIf="cartCount > 0">
+                <button class="btn btn-primary w-100" (click)="toggleCartSidebar()">
+                  <i class="bi bi-cart3 me-2"></i>
+                  {{ translate('cart.viewCart') || 'View Cart' }}
+                  <span class="badge bg-light text-dark ms-2">{{ cartCount }}</span>
+                </button>
+              </div>
+
+              <div class="contact-info mt-3">
+                <div class="contact-item">
+                  <i class="bi bi-telephone"></i>
+                  <span>{{ restaurant.contact.phone }}</span>
+                </div>
+                <div class="contact-item" *ngIf="restaurant.contact.website">
+                  <i class="bi bi-globe"></i>
+                  <a [href]="restaurant.contact.website" target="_blank">{{ restaurant.contact.website }}</a>
+                </div>
+                <div class="contact-item">
+                  <i class="bi bi-geo-alt"></i>
+                  <span>{{ restaurant.address.street }}, {{ restaurant.address.city }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Menu Section -->
+  <div class="menu-section" *ngIf="!loading">
+    <div class="container">
+      <div class="row">
+
+        <!-- Menu Filters & Categories -->
+        <div class="col-lg-3">
+          <div class="menu-sidebar" [class.sticky]="stickyCategories">
+
+            <!-- Search -->
+            <div class="search-section mb-4">
+              <div class="input-group">
+                <span class="input-group-text">
+                  <i class="bi bi-search"></i>
+                </span>
+                <input type="text"
+                       class="form-control"
+                       [placeholder]="translate('menu.search.placeholder') || 'Search menu...'"
+                       [(ngModel)]="searchQuery"
+                       (input)="onSearchChange(searchQuery)">
+              </div>
+            </div>
+
+            <!-- Dietary Filters -->
+            <div class="dietary-filters mb-4">
+              <h6 class="filter-title">{{ translate('menu.dietaryOptions') || 'Dietary Options' }}</h6>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="vegetarian"
+                       [(ngModel)]="showVegetarianOnly" (change)="onDietaryFilterChange()">
+                <label class="form-check-label" for="vegetarian">
+                  🥬 {{ translate('menu.vegetarian') || 'Vegetarian' }}
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="vegan"
+                       [(ngModel)]="showVeganOnly" (change)="onDietaryFilterChange()">
+                <label class="form-check-label" for="vegan">
+                  🌱 {{ translate('menu.vegan') || 'Vegan' }}
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="glutenFree"
+                       [(ngModel)]="showGlutenFreeOnly" (change)="onDietaryFilterChange()">
+                <label class="form-check-label" for="glutenFree">
+                  🌾 {{ translate('menu.glutenFree') || 'Gluten Free' }}
+                </label>
+              </div>
+            </div>
+
+            <!-- Categories -->
+            <div class="categories-list">
+              <h6 class="filter-title">{{ translate('menu.categories') || 'Categories' }}</h6>
+              <div class="category-item"
+                   [class.active]="selectedCategoryId === null"
+                   (click)="onCategorySelect(null)">
+                <span>{{ translate('menu.allItems') || 'All Items' }}</span>
+                <span class="item-count">{{ filteredItems.length }}</span>
+              </div>
+              <div class="category-item"
+                   *ngFor="let category of categories; trackBy: trackByCategory"
+                   [class.active]="selectedCategoryId === category.id"
+                   (click)="onCategorySelect(category.id)">
+                <span>{{ category.name }}</span>
+                <span class="item-count">{{ getCategoryItemCount(category.id) }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Menu Items -->
+        <div class="col-lg-9">
+          <div class="menu-content">
+
+            <!-- No Results -->
+            <div class="no-results text-center py-5" *ngIf="filteredItems.length === 0 && !loading">
+              <i class="bi bi-search display-1 text-muted mb-3"></i>
+              <h4>{{ translate('menu.noResults.title') || 'No items found' }}</h4>
+              <p class="text-muted">
+                {{ translate('menu.noResults.message') || 'Try adjusting your search or filters' }}
+              </p>
+            </div>
+
+            <!-- Menu Categories and Items -->
+            <div class="menu-categories" *ngIf="filteredItems.length > 0">
+              <div class="category-section"
+                   *ngFor="let category of categories; trackBy: trackByCategory"
+                   [id]="'category-' + category.id"
+                   [style.display]="getCategoryItemCount(category.id) > 0 ? 'block' : 'none'">
+
+                <div class="category-header">
+                  <h3 class="category-title">{{ category.name }}</h3>
+                  <p class="category-description" *ngIf="category.description">{{ category.description }}</p>
+                </div>
+
+                <div class="menu-items-grid">
+                  <div class="menu-item-card"
+                       *ngFor="let item of getItemsByCategory(category.id); trackBy: trackByItem">
+
+                    <div class="item-image">
+                      <img [src]="item.image" [alt]="item.name" loading="lazy">
+                      <div class="item-badges">
+                        <span class="badge bg-success" *ngIf="item.isPopular">
+                          <i class="bi bi-star"></i> Popular
+                        </span>
+                        <span class="badge bg-warning" *ngIf="item.isSpicy">🌶️</span>
+                      </div>
+                    </div>
+
+                    <div class="item-content">
+                      <div class="item-header">
+                        <h5 class="item-name">
+                          {{ item.name }}
+                          <span class="dietary-icons ms-2">
+                            <span *ngFor="let icon of getDietaryIcons(item)">{{ icon }}</span>
+                          </span>
+                        </h5>
+                        <span class="item-price">${{ formatPrice(item.price) }}</span>
+                      </div>
+
+                      <p class="item-description">{{ item.description }}</p>
+
+                      <div class="item-meta">
+                        <div class="item-details">
+                          <span class="prep-time" *ngIf="item.preparationTime">
+                            <i class="bi bi-clock"></i> {{ item.preparationTime }} min
+                          </span>
+                          <span class="calories" *ngIf="item.calories">
+                            <i class="bi bi-lightning"></i> {{ item.calories }} cal
+                          </span>
+                        </div>
+
+                        <button class="btn btn-primary btn-sm add-to-cart-btn"
+                                (click)="addToCart(item)"
+                                [disabled]="!item.isAvailable">
+                          <i class="bi bi-plus-circle me-1"></i>
+                          {{ translate('menu.addToCart') || 'Add to Cart' }}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Error State -->
+<div class="error-container text-center py-5" *ngIf="!restaurant && !loading">
+  <i class="bi bi-exclamation-triangle display-1 text-muted mb-3"></i>
+  <h4>{{ translate('restaurant.notFound.title') || 'Restaurant not found' }}</h4>
+  <p class="text-muted">
+    {{ translate('restaurant.notFound.message') || 'The restaurant you are looking for does not exist.' }}
+  </p>
+  <a [routerLink]="['/customer/restaurants']" class="btn btn-primary">
+    {{ translate('restaurant.notFound.backToList') || 'Back to Restaurants' }}
+  </a>
+</div>
+
+<!-- Item Customization Modal -->
+<app-item-customization-modal
+  *ngIf="selectedMenuItem"
+  [menuItem]="selectedMenuItem"
+  [isVisible]="showCustomizationModal"
+  (onConfirm)="onCustomizationConfirm($event)"
+  (onCancel)="onCustomizationCancel()">
+</app-item-customization-modal>
+
+<!-- Cart Sidebar -->
+<app-cart-sidebar
+  [isVisible]="showCartSidebar"
+  (onClose)="onCartSidebarClose()"
+  (onCheckout)="onCheckout()">
+</app-cart-sidebar>

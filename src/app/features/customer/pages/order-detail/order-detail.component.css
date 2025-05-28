@@ -1,0 +1,658 @@
+/* Order Detail Page Styles */
+
+.order-detail-page {
+  background-color: var(--bs-body-bg);
+  min-height: 100vh;
+  padding: 2rem 0;
+}
+
+/* Loading State */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  text-align: center;
+}
+
+.loading-text {
+  margin-top: 1rem;
+  color: var(--bs-secondary);
+  font-size: 1.1rem;
+}
+
+/* Page Header */
+.order-header {
+  margin-bottom: 2rem;
+}
+
+.breadcrumb {
+  background: none;
+  padding: 0;
+  margin-bottom: 1rem;
+}
+
+.breadcrumb a {
+  color: var(--restaurant-primary);
+  text-decoration: none;
+}
+
+.breadcrumb a:hover {
+  text-decoration: underline;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 2rem;
+}
+
+.page-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--restaurant-text);
+  margin: 0;
+}
+
+.order-meta {
+  margin-top: 0.5rem;
+}
+
+.order-date {
+  color: var(--bs-secondary);
+  font-size: 1rem;
+}
+
+.order-status-badge {
+  flex-shrink: 0;
+}
+
+.order-status-badge .badge {
+  font-size: 1rem;
+  padding: 0.75rem 1.25rem;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Card Styles */
+.order-tracking-card,
+.order-timeline-card,
+.order-items-card,
+.order-actions-card,
+.order-summary-card,
+.delivery-info-card {
+  background-color: var(--bs-card-bg);
+  border-radius: var(--restaurant-border-radius);
+  box-shadow: var(--restaurant-card-shadow);
+  border: 1px solid var(--bs-border-color);
+  padding: 2rem;
+  margin-bottom: 2rem;
+}
+
+.card-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--restaurant-text);
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+}
+
+.card-title i {
+  color: var(--restaurant-primary);
+}
+
+/* Order Tracking */
+.delivery-time-info {
+  margin-bottom: 2rem;
+  padding: 1rem;
+  background-color: var(--bs-light);
+  border-radius: var(--restaurant-border-radius);
+  border: 1px solid var(--bs-border-color);
+}
+
+.delivery-time {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.1rem;
+}
+
+.time-label {
+  color: var(--bs-body-color);
+}
+
+.time-value {
+  font-weight: 600;
+  color: var(--restaurant-primary);
+}
+
+.order-progress {
+  margin-bottom: 2rem;
+}
+
+.progress-bar-container {
+  margin-bottom: 1rem;
+}
+
+.progress {
+  height: 12px;
+  border-radius: 6px;
+  background-color: var(--bs-light);
+}
+
+.progress-bar {
+  border-radius: 6px;
+  transition: width 0.6s ease;
+}
+
+.progress-text {
+  text-align: center;
+  color: var(--bs-secondary);
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+}
+
+.status-steps {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.step {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  opacity: 0.5;
+  transition: var(--restaurant-transition);
+}
+
+.step.completed,
+.step.current {
+  opacity: 1;
+}
+
+.step.current {
+  color: var(--restaurant-primary);
+}
+
+.step-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: var(--bs-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.75rem;
+  font-size: 1.5rem;
+  color: var(--bs-secondary);
+  transition: var(--restaurant-transition);
+}
+
+.step.completed .step-icon {
+  background-color: var(--restaurant-success);
+  color: white;
+}
+
+.step.current .step-icon {
+  background-color: var(--restaurant-primary);
+  color: white;
+}
+
+.step-title {
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin-bottom: 0.25rem;
+}
+
+.step-time {
+  font-size: 0.8rem;
+  color: var(--bs-secondary);
+}
+
+/* Timeline */
+.timeline {
+  position: relative;
+  padding-left: 2rem;
+}
+
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 1rem;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background-color: var(--bs-border-color);
+}
+
+.timeline-item {
+  position: relative;
+  margin-bottom: 2rem;
+  padding-left: 2rem;
+}
+
+.timeline-item:last-child {
+  margin-bottom: 0;
+}
+
+.timeline-marker {
+  position: absolute;
+  left: -2rem;
+  top: 0.25rem;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background-color: var(--bs-light);
+  border: 2px solid var(--bs-border-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  color: var(--bs-secondary);
+}
+
+.timeline-item.current .timeline-marker {
+  background-color: var(--restaurant-primary);
+  border-color: var(--restaurant-primary);
+  color: white;
+}
+
+.timeline-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.5rem;
+}
+
+.timeline-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--restaurant-text);
+  margin: 0;
+}
+
+.timeline-time {
+  color: var(--bs-secondary);
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+.timeline-message {
+  color: var(--bs-body-color);
+  margin-bottom: 0.5rem;
+  line-height: 1.5;
+}
+
+.timeline-updated-by {
+  color: var(--bs-secondary);
+  font-style: italic;
+}
+
+/* Order Items */
+.order-items {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.order-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 1.5rem;
+  background-color: var(--bs-light);
+  border-radius: var(--restaurant-border-radius);
+  border: 1px solid var(--bs-border-color);
+}
+
+.item-details {
+  flex: 1;
+}
+
+.item-name {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--restaurant-text);
+  margin-bottom: 0.5rem;
+}
+
+.item-customizations,
+.item-instructions {
+  margin-bottom: 0.5rem;
+}
+
+.item-customizations small,
+.item-instructions small {
+  font-size: 0.85rem;
+  line-height: 1.4;
+  display: block;
+}
+
+.item-quantity-price {
+  display: flex;
+  gap: 1rem;
+  font-size: 0.9rem;
+}
+
+.quantity {
+  color: var(--bs-secondary);
+}
+
+.unit-price {
+  color: var(--bs-body-color);
+}
+
+.item-total {
+  text-align: right;
+  flex-shrink: 0;
+  margin-left: 1rem;
+}
+
+.total-price {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--restaurant-primary);
+}
+
+/* Action Buttons */
+.action-buttons {
+  display: flex;
+  flex-direction: column;
+}
+
+.action-buttons .btn {
+  padding: 0.875rem 1.5rem;
+  font-weight: 600;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+/* Order Summary */
+.summary-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.summary-label {
+  color: var(--bs-body-color);
+  font-size: 0.95rem;
+}
+
+.summary-value {
+  font-weight: 600;
+  color: var(--restaurant-text);
+  font-size: 0.95rem;
+}
+
+.summary-value.free-delivery {
+  color: var(--restaurant-success);
+}
+
+.summary-divider {
+  margin: 1rem 0;
+  border-color: var(--bs-border-color);
+}
+
+.total-row .summary-label {
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: var(--restaurant-text);
+}
+
+.total-price {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--restaurant-primary);
+}
+
+/* Delivery Information */
+.delivery-details {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.delivery-address h6,
+.delivery-instructions h6,
+.payment-method h6 {
+  font-weight: 600;
+  color: var(--restaurant-text);
+  margin-bottom: 0.5rem;
+  font-size: 0.95rem;
+}
+
+.address-text,
+.instructions-text,
+.payment-text {
+  color: var(--bs-body-color);
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Order Not Found */
+.order-not-found {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+}
+
+.not-found-content {
+  text-align: center;
+  max-width: 500px;
+  padding: 2rem;
+}
+
+.not-found-icon {
+  font-size: 4rem;
+  color: var(--bs-secondary);
+  opacity: 0.5;
+  margin-bottom: 1.5rem;
+}
+
+.not-found-content h3 {
+  color: var(--restaurant-text);
+  margin-bottom: 1rem;
+}
+
+.not-found-content p {
+  margin-bottom: 2rem;
+  font-size: 1.1rem;
+}
+
+/* RTL Support */
+[dir="rtl"] .timeline {
+  padding-left: 0;
+  padding-right: 2rem;
+}
+
+[dir="rtl"] .timeline::before {
+  left: auto;
+  right: 1rem;
+}
+
+[dir="rtl"] .timeline-item {
+  padding-left: 0;
+  padding-right: 2rem;
+}
+
+[dir="rtl"] .timeline-marker {
+  left: auto;
+  right: -2rem;
+}
+
+[dir="rtl"] .item-total {
+  margin-left: 0;
+  margin-right: 1rem;
+}
+
+[dir="rtl"] .me-1,
+[dir="rtl"] .me-2 {
+  margin-right: 0;
+  margin-left: 0.25rem;
+}
+
+[dir="rtl"] .me-2 {
+  margin-left: 0.5rem;
+}
+
+/* Responsive Design */
+@media (max-width: 992px) {
+  .header-content {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .order-status-badge {
+    align-self: flex-start;
+  }
+}
+
+@media (max-width: 768px) {
+  .order-detail-page {
+    padding: 1rem 0;
+  }
+
+  .page-title {
+    font-size: 2rem;
+  }
+
+  .order-tracking-card,
+  .order-timeline-card,
+  .order-items-card,
+  .order-actions-card,
+  .order-summary-card,
+  .delivery-info-card {
+    padding: 1.5rem;
+  }
+
+  .status-steps {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .step {
+    flex-direction: row;
+    text-align: left;
+    align-items: center;
+  }
+
+  .step-icon {
+    margin-bottom: 0;
+    margin-right: 1rem;
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
+  }
+
+  .timeline-header {
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .timeline-time {
+    align-self: flex-start;
+  }
+
+  .order-item {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .item-total {
+    margin-left: 0;
+    text-align: left;
+  }
+}
+
+@media (max-width: 576px) {
+  .order-tracking-card,
+  .order-timeline-card,
+  .order-items-card,
+  .order-actions-card,
+  .order-summary-card,
+  .delivery-info-card {
+    padding: 1rem;
+  }
+
+  .timeline {
+    padding-left: 1.5rem;
+  }
+
+  .timeline-item {
+    padding-left: 1.5rem;
+  }
+
+  .timeline-marker {
+    left: -1.5rem;
+    width: 1.5rem;
+    height: 1.5rem;
+    font-size: 0.8rem;
+  }
+
+  [dir="rtl"] .timeline {
+    padding-right: 1.5rem;
+  }
+
+  [dir="rtl"] .timeline-item {
+    padding-right: 1.5rem;
+  }
+
+  [dir="rtl"] .timeline-marker {
+    right: -1.5rem;
+  }
+
+  [dir="rtl"] .step-icon {
+    margin-right: 0;
+    margin-left: 1rem;
+  }
+}
+
+/* Dark theme adjustments */
+[data-bs-theme="dark"] .delivery-time-info,
+[data-bs-theme="dark"] .order-item {
+  background-color: var(--bs-dark);
+}
+
+[data-bs-theme="dark"] .step-icon {
+  background-color: var(--bs-dark);
+}
+
+[data-bs-theme="dark"] .timeline-marker {
+  background-color: var(--bs-dark);
+  border-color: var(--bs-border-color);
+}
+
+/* Animation */
+.order-content {
+  animation: fadeInUp 0.5s ease;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
